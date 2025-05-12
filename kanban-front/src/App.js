@@ -54,23 +54,19 @@ const menuRef = useRef(null);;
 
   // 1) Начальная загрузка: localStorage или API
   useEffect(() => {
-    const saved = localStorage.getItem("kanban-boards");
-    if (saved) {
-      setBoards(JSON.parse(saved));
-    } else {
-      axios
-        .get("/api/board")
-        .then((res) => {
-          const tasks = res.data.tasks || [];
-          const grouped = statuses.map((st, i) => ({
-            id: `${i + 1}`,
-            title: st,
-            cards: tasks.filter((t) => t.status === st),
-          }));
-          setBoards(grouped);
-        })
-        .catch((err) => console.error("Ошибка загрузки:", err));
-    }
+    // всегда загружаем задачи с сервера, игнорируем localStorage
+    axios
+      .get("/api/board")
+      .then((res) => {
+        const tasks = res.data.tasks || [];
+        const grouped = statuses.map((st, i) => ({
+          id: `${i + 1}`,
+          title: st,
+          cards: tasks.filter((t) => t.status === st),
+        }));
+        setBoards(grouped);
+      })
+      .catch((err) => console.error("Ошибка загрузки:", err));
   }, []);
 
   // 2) Сохраняем тему
