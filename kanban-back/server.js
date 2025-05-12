@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log('ENV → SHEET_WEBAPP_URL =', process.env.SHEET_WEBAPP_URL);
 const express = require("express");
 const cors = require("cors");
 const axios = require("axios");
