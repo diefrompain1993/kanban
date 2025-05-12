@@ -1,0 +1,287 @@
+:root {
+  --background: #fafafa;
+  --foreground: #111;
+  --secondary-background: oklch(96.8% 0.007 247.896);
+  --red-300: #f8c5ba;
+  --red-500: oklch(63.7% 0.237 25.331);
+  --red-700: #8d2316;
+  --yellow-300: #fff2a3;
+  --yellow-700: oklch(47.6% 0.114 61.907);
+  --blue-300: #bcd3f8;
+  --blue-500: #2b7fff;
+  --blue-700: #102f97;
+  --green-300: #c6f7c8;
+  --green-700: #1e8f40;
+  --border: #e4e7ec;
+}
+
+.dark {
+  --background: #27272a;
+  --foreground: #fff;
+  --secondary-background: #3f3f46;
+  --border: #3f3f46;
+}
+
+html {
+  font-family: "Manrope", sans-serif;
+}
+
+/* ===== Custom Scrollbar ===== */
+.custom-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  border-radius: 50px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb:hover {
+  border: 1px solid gray;
+}
+
+/* ===== Основной контейнер (App) ===== */
+.app {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* ===== Навигация ===== */
+.app_nav {
+  padding: 20px 30px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 0;
+  color: var(--foreground);
+  background-color: var(--background);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.app_nav h1 {
+  font-size: 24px;
+}
+
+/* ===== Переключатель темы (Switch) ===== */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+  margin-left: 20px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+  border-radius: 50%;
+}
+input:checked + .slider {
+  background-color: var(--blue-500);
+}
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* ===== Меню над досками ===== */
+.board-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  margin: 0 30px 15px;
+  border-bottom: 1px solid #e1e1e1;
+  position: relative;
+  z-index: 10;
+}
+
+/* Левая и правая части меню */
+.menu-left,
+.menu-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Элементы меню (Sort, Filter, Search) */
+.menu-item {
+  position: relative;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: #555;
+  transition: color 0.3s;
+}
+.menu-item:hover {
+  color: #000;
+}
+
+/* Выпадающее меню (dropdown) */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  min-width: 120px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  padding: 4px 0;
+  z-index: 100;
+}
+.dropdown-item {
+  padding: 6px 12px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+.dropdown-item:hover {
+  background-color: #f0f0f0;
+}
+
+/* Поисковое поле */
+.search-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-icon {
+  position: absolute;
+  left: 4px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #555;
+  pointer-events: none;
+}
+.search-no-border {
+  border: none;
+  outline: none;
+  background: none;
+  padding-left: 24px;
+  font-size: 14px;
+  color: #555;
+  height: 24px;
+}
+.search-no-border::placeholder {
+  color: #aaa;
+}
+
+/* Тёмная тема для меню */
+.dark .board-menu {
+  border-bottom: 1px solid #444;
+}
+.dark .menu-item {
+  color: #aaa;
+}
+.dark .menu-item:hover {
+  color: #fff;
+}
+.dark .dropdown-menu {
+  background-color: #555;
+  border: 1px solid #444;
+}
+.dark .dropdown-item {
+  color: #ddd;
+}
+.dark .dropdown-item:hover {
+  background-color: #666;
+}
+.dark .search-no-border {
+  color: #fff;
+}
+.dark .search-icon {
+  color: #ccc;
+}
+
+/* ===== Контейнер для досок ===== */
+.app_boards_container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  padding-top: 20px;
+}
+.app_boards {
+   width: fit-content;
+   padding: 10px 30px;
+   display: flex;
+   gap: 24px;
+}
+
+/* Для планшетов и небольших десктопов */
+@media (max-width: 1024px) {
+  .app_boards {
+    /* вместо горизонтальной прокрутки — многорядка */
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 10px;
+  }
+  .board {
+    /* колонки по две в ряду */
+    flex: 0 0 calc(50% - 16px);
+    margin-bottom: 16px;
+  }
+}
+
+/* Для мобильных телефонов */
+@media (max-width: 640px) {
+  .app_boards {
+    /* стекируем колонки вертикально */
+    flex-direction: column;
+    gap: 12px;
+    padding: 10px;
+  }
+  .board {
+    /* каждая колонка на всю ширину */
+    flex: 0 0 100%;
+    margin-bottom: 12px;
+  }
+  .board_body {
+    padding: 8px;
+  }
+  .board_add-card-btn {
+    height: 40px;
+    font-size: 14px;
+  }
+  .add-card-modal {
+    width: 90vw;
+    padding: 12px;
+  }
+  .add-card-modal > input,
+  .add-card-modal textarea {
+    font-size: 0.9rem;
+  }
+  .modal-actions button {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+  }
+}

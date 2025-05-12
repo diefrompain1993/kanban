@@ -1,0 +1,465 @@
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to   { opacity: 1; transform: translateY(  0); }
+}
+.cardinfo_container {
+  width: min(700px, 90vw);
+  position: relative;
+  color: var(--foreground);
+  background: #fff;
+  max-height: 90vh;
+  margin: 0 auto;
+  padding: 50px 24px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+.cardinfo_container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+.dark .cardinfo_container {
+  background: var(--background);
+}
+
+/* Кнопка закрытия */
+.cardinfo_close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  cursor: pointer;
+   transition: transform 0.2s ease;
+}
+
+.cardinfo_close-btn:hover {
+  transform: scale(1.1);
+}
+/* Статичный заголовок */
+.cardinfo_title--static {
+ margin: 0 0 24px;
+  padding-top: 16px;               /* отступ над текстом */
+  border-top: 2px solid var(--border); /* тонкая линия сверху */
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--foreground);
+
+}
+
+/* Статичное описание с разделителем */
+.cardinfo_description--static {
+  margin: 0 0 24px;
+  padding-bottom: 16px;
+  font-size: 0.90rem;
+  line-height: 1.5;
+  color: var(--text-muted);
+  white-space: pre-wrap;
+  word-break: break-word;
+  border-bottom: 2px solid var(--border);
+}
+
+/* Табличные поля */
+.cardinfo_table-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 120px auto;
+  align-items: center;
+  gap: 20px;
+}
+.row_label {
+  font-size: 0.9rem;
+  color: #444;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.dark .row_label {
+  color: #ccc;
+}
+.row_value {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Статусы и приоритет */
+.cardinfo_static-value {
+  padding: 4px 8px;
+  width: fit-content;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Date-picker — более узкие поля */
+.date-picker {
+  padding: 4px 8px;
+  background: var(--secondary-background);
+  border-radius: 8px;
+  accent-color: var(--foreground);
+}
+.date-picker input[type="date"] {
+  width: 120px;
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+  background: transparent;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+.date-picker input[type="date"]::-webkit-datetime-edit,
+.date-picker input[type="date"]::-webkit-datetime-edit-text,
+.date-picker input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+}
+.date-picker input[type="date"]::-webkit-datetime-edit-day-field,
+.date-picker input[type="date"]::-webkit-datetime-edit-month-field,
+.date-picker input[type="date"]::-webkit-datetime-edit-year-field {
+  padding: 0 2px;
+}
+.date-picker input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  right: 8px;
+}
+.date-picker input[type="date"]::-webkit-inner-spin-button {
+  display: none;
+}
+.date-picker input[type="date"]::-moz-focus-inner {
+  border: 0;
+}
+.date-picker input[type="date"]::-moz-placeholder {
+  color: var(--text-muted);
+}
+
+/* Стили тегов — компактно */
+.cardinfo_tags {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  margin-top: 0px;
+}
+.cardinfo_label-input {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--secondary-background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.cardinfo_label-input:hover,
+.cardinfo_label-input:focus-within {
+  border-color: #888;
+  background: var(--background);
+}
+.cardinfo_label-input .editable_input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+  font-size: 0.875rem;
+  padding: 0;
+  margin: 0;
+}
+
+.cardinfo_label-input .btn-add {
+  margin-left: 10px;
+}
+.cardinfo_label-colors {
+  display: flex;
+  gap: 8px;
+}
+.cardinfo_color-circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.cardinfo_color-circle:hover {
+  transform: scale(1.1);
+}
+.cardinfo_color-circle.selected {
+  box-shadow: 0 0 0 3px var(--foreground);
+}
+.label-error {
+  color: var(--red-500);
+  font-size: 0.8rem;
+  margin: 0;
+}
+.cardinfo_labels-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+
+/* компактные закруглённые «пилюли» */
+.cardinfo_label-pill {
+  padding: 4px 8px;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: default;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+
+/* крестик удаления внутри пилюли */
+.cardinfo_label-remove {
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  width: 16px;
+  height: 16px;
+}
+
+
+/* Вкладки */
+.cardinfo_tabs {
+  display: flex;
+  border-bottom: 1px solid var(--secondary-background);
+  margin-bottom: 16px;
+}
+.cardinfo_tab {
+  padding: 10px 20px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+}
+.dark .cardinfo_tab {
+  color: #ccc;
+}
+.cardinfo_tab-active,
+.cardinfo_tab:hover {
+  color: var(--blue-500);
+  border-bottom: 1px solid var(--blue-500);
+}
+
+/* Чеклист */
+.cardinfo_checklist-header {
+  margin-bottom: 8px;
+}
+.cardinfo_checklist-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+}
+.cardinfo_progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: var(--secondary-background);
+  margin-bottom: 16px;
+  border-radius: 99999px;
+  overflow: hidden;
+}
+.cardinfo_progress-fill {
+  height: 100%;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+/* Список задач */
+.cardinfo_tasks {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+/* Пункт чеклиста */
+.cardinfo_task-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 1rem;
+
+  overflow: hidden;
+  max-height: 32px; /* подберите под вашу высоту строки */
+  margin-bottom: 6px;
+  padding: 4px 0;   /* если нужно пространство сверху/снизу */
+  transition:
+    opacity 0.3s ease,
+    max-height 0.3s ease,
+    margin-bottom 0.3s ease,
+    padding 0.3s ease;
+  animation: fadeInDown 0.3s ease;
+}
+
+.cardinfo_task-item.removing {
+  opacity: 0;
+  max-height: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+
+/* Плавное затемнение текста выполненных задач */
+.cardinfo_task-item .task-text {
+  transition: color 0.3s ease, opacity 0.3s ease;
+  color: var(--foreground);
+}
+.cardinfo_task-item .task-text.completed {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+/* Кастомный чекбокс */
+.cardinfo_task-item .custom-checkbox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+.cardinfo_task-item .custom-checkbox input[type="checkbox"] {
+  display: none;
+}
+.cardinfo_task-item .custom-checkbox .checkmark {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background-color: var(--secondary-background);
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.cardinfo_task-item input[type="checkbox"]:checked + .checkmark {
+  background-color: var(--blue-500);
+  border: none;
+}
+.cardinfo_task-item .custom-checkbox .checkmark::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 4px;
+  height: 8px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  display: none;
+}
+.cardinfo_task-item input[type="checkbox"]:checked + .checkmark::after {
+  display: block;
+}
+
+/* Иконка удаления */
+.cardinfo_task-item .cardinfo_task-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.cardinfo_task-item .cardinfo_task-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+
+  color: var(--text-muted);          /* базовый цвет */
+  transition: color 0.2s ease;       /* плавный переход */
+}
+.cardinfo_task-item .cardinfo_task-remove:hover {
+  color: var(--red-500) !important;  /* при наведении — красный */
+}
+
+
+/* Назначенные пользователи */
+.cardinfo_assigned {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.cardinfo_assigned img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.dark .cardinfo_assigned img {
+  border-color: #444;
+}
+
+/* Финальный wrap */
+.cardinfo_static-value,
+.row_value {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+/* Для строк с датами */
+.row-date {
+  display: grid;
+  grid-template-columns: 120px max-content;
+  align-items: center;
+  gap: 20px;
+}
+
+/* для строки с тегами — выравниваем элементы по верху, а не по центру */
+.row.row-tags {
+  align-items: flex-start;
+}
+
+.row.row-tags .row_label {
+  margin-top: 15px; /* поиграй значением, если захочешь чуть выше/ниже */
+}
+
+.cardinfo_container .editable_line {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  width: 300px;
+  max-width: 100%;
+  padding: 6px 10px;
+  background: var(--secondary-background);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.cardinfo_container .editable_line:hover,
+.cardinfo_container .editable_line:focus-within {
+  border-color: #888;
+  background: var(--background);
+}

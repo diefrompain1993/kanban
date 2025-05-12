@@ -1,0 +1,435 @@
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
+
+.board {
+  width: 340px;
+  color: var(--foreground);
+  background-color: #fff;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  overflow: visible;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.3s;
+}
+
+.dark .board {
+  background: var(--secondary-background);
+}
+
+.board_header {
+  padding: 15px 12px;
+}
+
+.board_header h3 {
+  font-weight: 600;
+  font-size: 16px;
+  margin: 0;
+}
+
+.board_body {
+  padding: 10px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.board_add-card-btn {
+  margin-bottom: 10px;
+  width: 100%;
+  height: 48px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.board_add-card-btn:hover {
+  background-color: #f0f0f0;          /* чуть более тёмный, чем белый фон */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* ховер в тёмной теме */
+.dark .board_add-card-btn:hover {
+  background-color: #3a3a3a;          /* чуть светлее, чем основной тёмный фон */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+.board_cards {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s;
+}
+
+.board_cards.dragover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.board_cards > .card {
+  margin-bottom: 5px;
+}
+
+.board_cards > .card:last-child {
+  margin-bottom: 0;
+}
+
+/* === МОДАЛКА === */
+.add-card-modal {
+  width: 380px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--secondary-background, #2b2b2b);
+  padding: 16px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  font-size: 0.875rem;
+}
+
+.add-card-modal {
+  overflow-y: auto;              /* уже у вас есть */
+  scrollbar-width: none;         /* Firefox */
+  -ms-overflow-style: none;      /* IE 10+ */
+}
+
+
+
+.add-card-modal h3 {
+  margin: 0;
+  font-size: 1rem;
+  color: var(--foreground, #fff);
+  text-align: center;
+}
+
+/* Поле «Заголовок» */
+.add-card-modal > input[type="text"] {
+  width: 100%;
+  padding: 10px 12px;
+  height: 42px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  min-height: 42px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.add-card-modal input[type="text"]:focus {
+  border-color: #888;
+  outline: none;
+}
+
+/* Поле «Описание» */
+.add-card-modal textarea {
+  width: 100%;
+  padding: 10px 12px;
+  height: 100px;
+  font-size: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  box-sizing: border-box;
+  flex-shrink: 0;
+  resize: none; /* запрет ручного изменения размера */
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.add-card-modal textarea:focus {
+  border-color: #888;
+  outline: none;
+}
+
+/* Плейсхолдеры */
+.add-card-modal input::placeholder,
+.add-card-modal textarea::placeholder {
+  color: var(--text-muted, #888);
+}
+
+.field-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground, #fff);
+  margin-top: 8px;
+}
+
+/* Общий стиль для полей дат */
+.field-input {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.875rem;
+  box-sizing: border-box;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.field-input:focus {
+  border-color: #888;
+  outline: none;
+}
+
+/* Уменьшенная ширина для обоих date-полей */
+.date-small {
+  width: 130px;
+
+  /* базовый шрифт для даты */
+  font-family: "Inter", system-ui, sans-serif;
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.02em;
+  color: var(--foreground);
+}
+
+/* WebKit: подтягиваем шрифты внутрь нативного date-input */
+.date-small::-webkit-datetime-edit,
+.date-small::-webkit-datetime-edit-text,
+.date-small::-webkit-datetime-edit-fields-wrapper {
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+  letter-spacing: inherit;
+}
+
+/* Отступы между цифрами */
+.date-small::-webkit-datetime-edit-day-field,
+.date-small::-webkit-datetime-edit-month-field,
+.date-small::-webkit-datetime-edit-year-field {
+  padding: 0 2px;
+}
+
+/* Индикатор календаря чуть прозрачнее */
+.date-small::-webkit-calendar-picker-indicator {
+  opacity: 0.6;
+  right: 8px;
+}
+
+/* Убрать спиннер в Chrome */
+.date-small::-webkit-inner-spin-button {
+  display: none;
+}
+
+/* Firefox: минимальная доработка */
+.date-small::-moz-focus-inner {
+  border: 0;
+}
+.date-small::-moz-placeholder {
+  color: var(--text-muted);
+}
+
+/* Секция задач */
+.tasks-section {
+  display: flex;
+  flex-direction: column;
+}
+
+/* подчеркивание заголовка «Задачи» */
+.tasks-section h4 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--foreground, #fff);
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+
+/* в тёмной теме используем более светлый цвет линии */
+.dark .tasks-section h4 {
+  border-bottom-color: var(--text-muted, #888);
+}
+
+
+.task-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+
+  overflow: hidden;                                  /* важно для схлопывания */
+  max-height: 40px;                                  /* чуть больше вашей высоты строки */
+  transition: opacity 0.3s ease,
+              max-height 0.3s ease,
+              margin-bottom 0.3s ease,
+              padding 0.3s ease;
+
+  animation: fadeInDown 0.3s ease;                   /* появление */
+}
+
+
+
+/* когда помечаем на удаление, схлопываем и затухаем */
+.task-item.removing {
+  opacity: 0;
+  max-height: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+
+.task-item:last-child {
+  margin-bottom: 0;
+}
+
+/* чуть больший шрифт для текста задачи */
+.task-item span {
+  font-size: 1rem; /* было 0.85rem */
+}
+
+/* увеличить крестик удаления и сделать hover-красным */
+.task-remove-btn {
+  font-size: 1.2rem;  /* вместо 1rem */
+  transition: color 0.2s;
+}
+.task-remove-btn:hover {
+  color: #e74c3c;     /* красный на hover */
+}
+
+
+/* Удаление задачи */
+.task-remove-btn {
+  background: none;
+  border: none;
+  color: var(--text-muted, #aaa);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0;
+  margin: 0 4px;
+  line-height: 1;
+}
+
+/* Новая задача + кнопка «Добавить» */
+/* контейнер «Новая задача» как у тегов */
+.add-task {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 16px;
+
+  /* вот здесь просто меняем фон: */
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+
+  padding: 6px 10px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* hover/focus как у тегового инпута */
+.add-task:hover,
+.add-task:focus-within {
+  border-color: #888;
+  background: var(--background);
+}
+
+/* сам инпут внутри: прозрачный фон и без бордера */
+.add-task input {
+  flex-grow: 1;
+  max-width: 250px;
+  font-size: 0.85rem;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--foreground);
+  /* padding: 0; */            /* padding уже на контейнере */
+}
+
+/* кнопку «Добавить» оставляем как есть, она просто будет в этом контейнере */
+
+
+/* Кнопка «Добавить» */
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 16px;    /* чуть больше вертикальный паддинг */
+  font-size: 0.875rem;  /* чуть крупнее текст */
+  background: #0066ff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;   /* чуть сильнее скругление */
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-add:hover {
+  background: #0055dd;
+}
+
+
+
+/* Нижние кнопки */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.btn-save,
+.btn-cancel {
+  font-size: 0.875rem;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s;
+}
+
+.btn-save {
+  background: #28a745;
+  color: #fff;
+}
+
+.btn-save:hover {
+  background: #218838;
+}
+
+.btn-cancel {
+  background: #dc3545;
+  color: #fff;
+}
+
+.btn-cancel:hover {
+  background: #c82333;
+}
+
+/* в самом контейнере наследуем нужный шрифт */
+.add-card-modal {
+  font-family: 'Manrope', sans-serif;
+}
+
+/* чтобы и в самих инпутах/textarea он применялся */
+.add-card-modal input[type="text"],
+.add-card-modal textarea {
+  font-family: inherit;
+}
+

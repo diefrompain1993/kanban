@@ -1,0 +1,70 @@
+/* ============== EDITABLE.CSS ============== */
+
+/* Контейнер, где линия идет "коротко" под содержимым */
+.editable_line {
+  padding: 0 10px;
+  width: 100%;
+  height: 40px;
+  background: var(--secondary-background);
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 10px;
+}
+
+@media screen and (max-width: 500px) {
+  .editable_line {
+    width: 100%;
+  }
+}
+
+.editable_line.short {
+  /* если нужно ограничивать ширину, можно добавить max-width */
+  /* max-width: 200px; */
+}
+
+.editable_icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+/* Текст (неактивный режим) */
+.editable_text {
+  font-size: 14px;
+  font-weight: 400;
+  background: transparent;
+  color: var(--foreground);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Когда это заглушка (placeholder) */
+.editable_text.placeholder {
+  color: var(--text-muted); /* точно тот же серый, что в тегах */
+}
+
+/* Инпут (активный режим),
+   без рамок, с тем же нижним border, что и контейнер */
+.editable_input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--foreground);
+}
+
+/* Плейсхолдер внутри input */
+.editable_input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
+
+.editable_input.short {
+  /* или max-width: 200px; */
+}
