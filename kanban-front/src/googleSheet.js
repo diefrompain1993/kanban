@@ -1,7 +1,8 @@
 // src/googleSheet.js
 
 // Адрес твоего Node-прокси (Express с cors), который запущен на порту 3001
-const SHEET_API_URL = "http://localhost:3001/api/sheet";
+const SHEET_API_URL = (process.env.REACT_APP_API_URL || "") + "/api/sheet";
+
 
 /**
  * Вспомогательная функция для POST в Google Apps Script через твой сервер.
