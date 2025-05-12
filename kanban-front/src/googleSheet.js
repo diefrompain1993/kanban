@@ -1,14 +1,11 @@
 // src/googleSheet.js
 
-// Адрес твоего Node-прокси (Express с cors), который запущен на порту 3001
-const SHEET_API_URL = (process.env.REACT_APP_API_URL || "") + "/api/sheet";
-
-
 /**
- * Вспомогательная функция для POST в Google Apps Script через твой сервер.
- * @param {"add"|"update"|"delete"} action
- * @param {object} payload
+ * Вспомогательная функция для POST в Google Apps Script через ваш сервер.
+ * Все запросы идут на /api/sheet вашего Express-прокси.
  */
+const SHEET_API_URL = "/api/sheet";
+
 async function postToSheet(action, payload) {
   const res = await fetch(SHEET_API_URL, {
     method: "POST",
