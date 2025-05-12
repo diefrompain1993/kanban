@@ -1,18 +1,28 @@
-# ваши существующие правила
-/node_modules
-/.pnp
-.pnp.js
-/coverage
-/build
+# ОС-специфичное
 .DS_Store
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+
+# Логи
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# добавляем эти строки:
+# Зависимости
+node_modules/
+kanban-back/node_modules/
+kanban-front/node_modules/
+
+# Сборки и коверные артефакты
+build/
+kanban-front/build/
+coverage/
+
+# Локальные переменные окружения
 .env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Сервис-аккаунт Google
+service-account.json
 kanban-back/service-account.json
