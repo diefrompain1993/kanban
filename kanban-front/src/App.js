@@ -11,9 +11,7 @@ import { Sun, Moon } from "lucide-react";
 import Board from "./Components/Board/Board";
 import "./App.css";
 
- axios.defaults.baseURL =
-   process.env.REACT_APP_API_URL ||
-   window.location.origin;
+ axios.defaults.baseURL = window.location.origin;
 
 
 export default function App() {
