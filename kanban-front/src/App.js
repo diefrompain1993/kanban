@@ -1,4 +1,3 @@
-// 1) Все импорты подряд, без пропусков и кода между ними
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import {
@@ -10,6 +9,8 @@ import { DragDropContext } from "react-beautiful-dnd";
 import { Sun, Moon } from "lucide-react";
 import Board from "./Components/Board/Board";
 import "./App.css";
+
+
 
  axios.defaults.baseURL = window.location.origin;
 
