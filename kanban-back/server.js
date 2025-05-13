@@ -14,38 +14,8 @@ if (!SHEET_URL) {
   process.exit(1);
 }
 
-let tasksCache = [];
-
 /**
- * Запрашивает у Google Apps Script весь список тасок
- * и обновляет локальный кэш.
- */
-async function refreshCache() {
-  try {
-    const resp = await axios.post(
-      SHEET_URL,
-      { action: "get" },
-      { headers: { "Content-Type": "application/json" } }
-    );
-    if (resp.data && Array.isArray(resp.data.tasks)) {
-      tasksCache = resp.data.tasks;
-      console.log(`✅ Кэш обновлён: ${tasksCache.length} задач`);
-    } else {
-      throw new Error("Неверный формат ответа от Google Sheet");
-    }
-  } catch (err) {
-    console.error("❌ Не удалось загрузить задачи из Sheet:", err.toString());
-  }
-}
-
-// При старте подгружаем кэш
-refreshCache();
-// Обновляем каждые 5 минут (5 * 60 * 1000 ms)
-setInterval(refreshCache, 5 * 60 * 1000);
-
-
-/**
- * Прокси к Google Apps Script
+ * Вспомогательная функция для вызова Google Apps Script
  */
 async function callSheetAPI(body) {
   const resp = await axios.post(
@@ -56,68 +26,91 @@ async function callSheetAPI(body) {
   return resp.data;
 }
 
+let tasksCache = [];
 
-// ----- Эндпоинты для фронта -----
+/**
+ * Обновляет локальный кэш из Google Sheet
+ */
+async function refreshCache() {
+  try {
+    const data = await callSheetAPI({ action: "get" });
+    if (data.tasks && Array.isArray(data.tasks)) {
+      tasksCache = data.tasks;
+      console.log(`✅ Кэш обновлён: ${tasksCache.length} задач`);
+    } else {
+      throw new Error("Неверный формат ответа от Sheet API");
+    }
+  } catch (e) {
+    console.error("❌ refreshCache failed:", e.toString());
+  }
+}
 
-// 1) Отдаем доску (из кэша)
+// сразу поднять кэш
+refreshCache();
+// и потом каждые 5 минут
+setInterval(refreshCache, 5 * 60 * 1000);
+
+
+// ----- Эндпоинты -----
+
+// 1) Получить доску
 app.get("/api/board", (req, res) => {
   res.json({ tasks: tasksCache });
 });
 
-// 2) Добавить задачу
+// 2) Добавить карточку
 app.post("/api/addTask", async (req, res) => {
   try {
     const { card } = req.body;
     await callSheetAPI({ action: "add", payload: card });
     await refreshCache();
     res.json({ success: true });
-  } catch (err) {
-    console.error("addTask error:", err.toString());
-    res.status(500).json({ error: err.toString() });
+  } catch (e) {
+    console.error("addTask error:", e.toString());
+    res.status(500).json({ error: e.toString() });
   }
 });
 
-// 3) Обновить задачу (статус)
+// 3) Обновить только статус (Drag&Drop)
 app.post("/api/updateTask", async (req, res) => {
   try {
     const { id, status } = req.body;
     await callSheetAPI({ action: "update", payload: { id, status } });
     await refreshCache();
     res.json({ success: true });
-  } catch (err) {
-    console.error("updateTask error:", err.toString());
-    res.status(500).json({ error: err.toString() });
+  } catch (e) {
+    console.error("updateTask error:", e.toString());
+    res.status(500).json({ error: e.toString() });
   }
 });
 
-// 4) Полностью отредактировать карточку
+// 4) Полностью отредактировать карточку (даты, теги, чеклист и т.п.)
 app.post("/api/editTask", async (req, res) => {
   try {
     const { card } = req.body;
     await callSheetAPI({ action: "update", payload: card });
     await refreshCache();
     res.json({ success: true });
-  } catch (err) {
-    console.error("editTask error:", err.toString());
-    res.status(500).json({ error: err.toString() });
+  } catch (e) {
+    console.error("editTask error:", e.toString());
+    res.status(500).json({ error: e.toString() });
   }
 });
 
-// 5) Удалить задачу
+// 5) Удалить карточку
 app.post("/api/deleteTask", async (req, res) => {
   try {
     const { id } = req.body;
     await callSheetAPI({ action: "delete", payload: { id } });
     await refreshCache();
     res.json({ success: true });
-  } catch (err) {
-    console.error("deleteTask error:", err.toString());
-    res.status(500).json({ error: err.toString() });
+  } catch (e) {
+    console.error("deleteTask error:", e.toString());
+    res.status(500).json({ error: e.toString() });
   }
 });
 
-
-// ----- Запуск сервера -----
+// ----- Запуск -----
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
