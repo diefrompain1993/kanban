@@ -12,7 +12,6 @@ async function postToSheet(action, payload) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ action, payload }),
   });
-
   if (!res.ok) {
     const text = await res.text();
     throw new Error(`Sheet API error ${res.status}: ${text}`);
@@ -21,16 +20,33 @@ async function postToSheet(action, payload) {
 }
 
 /**
+ * @typedef {{ text: string, color: string }} TaskLabel
+ * @typedef {{ id: number, text: string, completed: boolean }} SubTask
+ * @typedef {{
+ *   id: string,
+ *   title: string,
+ *   description?: string,
+ *   status: string,
+ *   startDate?: string,
+ *   dueDate?: string,
+ *   priority?: string,
+ *   labels?: TaskLabel[],
+ *   tasks?: SubTask[]
+ * }} SheetTask
+ */
+
+/**
  * Добавить новую задачу в Google Sheets
- * @param {{id:string, title:string, description?:string, status:string, startDate?:string, dueDate?:string, priority?:string, labels?:{text:string}[]}} task
+ * @param {SheetTask} task
  */
 export function addTaskToSheet(task) {
+  // Шлём весь объект: даты, чек-лист, теги с цветом
   return postToSheet("add", task);
 }
 
 /**
  * Обновить существующую задачу в Google Sheets
- * @param {{id:string, title:string, description?:string, status:string, startDate?:string, dueDate?:string, priority?:string, labels?:{text:string}[]}} task
+ * @param {SheetTask} task
  */
 export function updateTaskInSheet(task) {
   return postToSheet("update", task);
