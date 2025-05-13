@@ -248,12 +248,11 @@ const removeCard = (boardId, cardId) => {
   );
 
   // 4) Сохраняем в своё API (Express)
-  axios
-    .post("/api/updateTask", {
-      id: draggableId,
-      status: movedCard.status, // уже текстовый заголовок колонны
-    })
-    .catch(console.error);
+axios
+  .post("/api/updateTask", {
+    card: movedCard
+  })
+  .catch(console.error);
 
   // 5) Пушим обновлённую карточку в Google Sheets
   updateTaskInSheet({

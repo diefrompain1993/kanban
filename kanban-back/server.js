@@ -74,8 +74,8 @@ app.post("/api/addTask", async (req, res) => {
 // 3) Обновить только статус (Drag&Drop)
 app.post("/api/updateTask", async (req, res) => {
   try {
-    const { id, status } = req.body;
-    await callSheetAPI({ action: "update", payload: { id, status } });
+    const { card } = req.body;               // получаем весь объект карточки
+    await callSheetAPI({ action: "update", payload: card });
     await refreshCache();
     res.json({ success: true });
   } catch (e) {
