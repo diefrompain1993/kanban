@@ -35,21 +35,32 @@ function CardInfo(props) {
     tasks: tasks || [],
   });
 
-  // сохранить изменения с дебаунсом
-  useEffect(() => {
-    const debounced = debounce(() => {
-      props.updateCard(
-        props.boardId,
-        id,
-        { ...props.card, ...localValues, date: localValues.dueDate }
-      );
-    }, 500);
-    debounced();
-    return () => {
-      debounced.flush();
-      debounced.cancel();
-    };
-  }, [localValues]);
+  const debouncedSave = useRef(
+  debounce(values => {
+    props.updateCard(
+      props.boardId,
+      id,
+      { ...props.card, ...values, date: values.dueDate }
+    );
+  }, 500)
+);
+
+// При любых изменениях localValues вызываем одну и ту же функцию
+useEffect(() => {
+  debouncedSave.current(localValues);
+  // при размонтировании — «довызываем» всё, что ещё висит в debounce
+  return () => {
+    debouncedSave.current.flush();
+  };
+}, [localValues]);
+
+const handleClose = () => {
+  // сразу сбросить остатки debounce и сделать финальный save
+  debouncedSave.current.flush();
+  // и уже закрыть модалку
+  props.onClose();
+};
+
 
   // пересчет приоритета
   const computePriority = (start, due) => {
@@ -164,9 +175,9 @@ if (progressPercent >= 33 && progressPercent <= 50) {
 
 
   return (
-    <Modal onClose={props.onClose}>
+    <Modal onClose={handleClose}>
       <div className="cardinfo_container">
-        <div className="cardinfo_close-btn" onClick={props.onClose}>
+        <div className="cardinfo_close-btn" onClick={handleClose}>
           <X size={24} />
         </div>
 

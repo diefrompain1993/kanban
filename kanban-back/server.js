@@ -1,100 +1,123 @@
 // server.js
-require("dotenv").config();              // загружаем .env перед всеми остальными require
+require("dotenv").config();            // обязательно в начале
 const express = require("express");
 const cors    = require("cors");
 const axios   = require("axios");
-
-console.log("→ ENV → SHEET_WEBAPP_URL =", process.env.SHEET_WEBAPP_URL);
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-let tasksInMemory = [];
+const SHEET_URL = process.env.SHEET_WEBAPP_URL;
+if (!SHEET_URL) {
+  console.error("❌ Ошибка: переменная SHEET_WEBAPP_URL не задана");
+  process.exit(1);
+}
 
-// 1) CRUD для фронта
-app.get("/api/board", async (req, res) => {
+let tasksCache = [];
+
+/**
+ * Запрашивает у Google Apps Script весь список тасок
+ * и обновляет локальный кэш.
+ */
+async function refreshCache() {
   try {
-    const url = process.env.SHEET_WEBAPP_URL;
-    if (!url) throw new Error("SHEET_WEBAPP_URL is not defined");
-
-    const response = await axios.post(
-      url,
+    const resp = await axios.post(
+      SHEET_URL,
       { action: "get" },
       { headers: { "Content-Type": "application/json" } }
     );
-
-    res.json({ tasks: response.data.tasks });
+    if (resp.data && Array.isArray(resp.data.tasks)) {
+      tasksCache = resp.data.tasks;
+      console.log(`✅ Кэш обновлён: ${tasksCache.length} задач`);
+    } else {
+      throw new Error("Неверный формат ответа от Google Sheet");
+    }
   } catch (err) {
-    console.error("Error fetching sheet:", err.toString());
-    res.status(500).json({ error: "Failed to load tasks from sheet" });
+    console.error("❌ Не удалось загрузить задачи из Sheet:", err.toString());
   }
+}
+
+// При старте подгружаем кэш
+refreshCache();
+// Обновляем каждые 5 минут (5 * 60 * 1000 ms)
+setInterval(refreshCache, 5 * 60 * 1000);
+
+
+/**
+ * Прокси к Google Apps Script
+ */
+async function callSheetAPI(body) {
+  const resp = await axios.post(
+    SHEET_URL,
+    body,
+    { headers: { "Content-Type": "application/json" } }
+  );
+  return resp.data;
+}
+
+
+// ----- Эндпоинты для фронта -----
+
+// 1) Отдаем доску (из кэша)
+app.get("/api/board", (req, res) => {
+  res.json({ tasks: tasksCache });
 });
 
-app.post("/api/addTask", (req, res) => {
-  const { card } = req.body;
-  tasksInMemory.push({ ...card });
-  axios
-    .post("/api/sheet", { action: "add", payload: card })
-    .catch(console.error);
-  res.json({ success: true });
-});
-
-app.post("/api/updateTask", (req, res) => {
-  const { id, status } = req.body;
-  const task = tasksInMemory.find(t => t.id === id);
-  if (!task) return res.status(404).json({ error: "Task not found" });
-  task.status = status;
-  axios
-    .post("/api/sheet", { action: "update", payload: { id, status } })
-    .catch(console.error);
-  res.json({ success: true });
-});
-
-app.post("/api/editTask", (req, res) => {
-  const { card } = req.body;
-  const idx = tasksInMemory.findIndex(t => t.id === card.id);
-  if (idx === -1) return res.status(404).json({ error: "Task not found" });
-  tasksInMemory[idx] = { ...card };
-  axios
-    .post("/api/sheet", { action: "update", payload: card })
-    .catch(console.error);
-  res.json({ success: true });
-});
-
-app.post("/api/deleteTask", (req, res) => {
-  const { id } = req.body;
-  const before = tasksInMemory.length;
-  tasksInMemory = tasksInMemory.filter(t => t.id !== id);
-  if (tasksInMemory.length === before)
-    return res.status(404).json({ error: "Task not found" });
-  axios
-    .post("/api/sheet", { action: "delete", payload: { id } })
-    .catch(console.error);
-  res.json({ success: true });
-});
-
-// 2) Прокси в Google Apps Script
-app.post("/api/sheet", async (req, res) => {
-  console.log("→ /api/sheet:", req.body);
+// 2) Добавить задачу
+app.post("/api/addTask", async (req, res) => {
   try {
-    const url = process.env.SHEET_WEBAPP_URL;
-    if (!url) throw new Error("SHEET_WEBAPP_URL is not defined");
-
-    const response = await axios.post(
-      url,
-      req.body,
-      { headers: { "Content-Type": "application/json" } }
-    );
-    res.json(response.data);
+    const { card } = req.body;
+    await callSheetAPI({ action: "add", payload: card });
+    await refreshCache();
+    res.json({ success: true });
   } catch (err) {
-    console.error("Sheet proxy error:", err.toString());
-    res
-      .status(500)
-      .json({ error: "Sheet proxy failed", details: err.toString() });
+    console.error("addTask error:", err.toString());
+    res.status(500).json({ error: err.toString() });
   }
 });
 
+// 3) Обновить задачу (статус)
+app.post("/api/updateTask", async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    await callSheetAPI({ action: "update", payload: { id, status } });
+    await refreshCache();
+    res.json({ success: true });
+  } catch (err) {
+    console.error("updateTask error:", err.toString());
+    res.status(500).json({ error: err.toString() });
+  }
+});
+
+// 4) Полностью отредактировать карточку
+app.post("/api/editTask", async (req, res) => {
+  try {
+    const { card } = req.body;
+    await callSheetAPI({ action: "update", payload: card });
+    await refreshCache();
+    res.json({ success: true });
+  } catch (err) {
+    console.error("editTask error:", err.toString());
+    res.status(500).json({ error: err.toString() });
+  }
+});
+
+// 5) Удалить задачу
+app.post("/api/deleteTask", async (req, res) => {
+  try {
+    const { id } = req.body;
+    await callSheetAPI({ action: "delete", payload: { id } });
+    await refreshCache();
+    res.json({ success: true });
+  } catch (err) {
+    console.error("deleteTask error:", err.toString());
+    res.status(500).json({ error: err.toString() });
+  }
+});
+
+
+// ----- Запуск сервера -----
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`✅ Server running at http://localhost:${PORT}`);
