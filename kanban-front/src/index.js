@@ -1,4 +1,4 @@
-import "./fonts/fonts.css";
+import "./assets/fonts/fonts.css";
 import React from "react";
 import ReactDOM from "react-dom";
 import "./index.css";
