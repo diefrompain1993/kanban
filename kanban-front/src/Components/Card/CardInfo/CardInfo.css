@@ -260,7 +260,7 @@
 .cardinfo_tab-active,
 .cardinfo_tab:hover {
   color: var(--blue-500);
-  border-bottom: 1px solid var(--blue-500);
+  border-bottom: 2px solid var(--blue-500);
 }
 
 /* Чеклист */
@@ -462,4 +462,332 @@
 .cardinfo_container .editable_line:focus-within {
   border-color: #888;
   background: var(--background);
+}
+
+/* =========================================================
+   1) Обёртка «пилюли» приоритета (priority-pill)
+   — padding 4px 8px, border-radius 8px, inline-flex для выравнивания
+   — цвет фона/текста задаётся inline-стилем через getStatusStyles()
+   ========================================================= */
+.priority-pill {
+  display: inline-flex;         /* разметка «по содержимому», но выравниваем по центру */
+  align-items: center;
+  position: relative;           /* для псевдоэлемента-стрелки */
+  padding: 4px 8px;             /* 4px сверху/снизу, 8px слева/справа */
+  border-radius: 8px;           /* такие же скругления, как у статуса «В работе» */
+  min-width: 80px;              /* минимальная ширина «пилюли» */
+  text-align: left;
+  user-select: none;
+  /* background-color и color задаются в React через:
+     style={getStatusStyles(localValues.priority)} */
+}
+
+/* =========================================================
+   2) САМ <select> (priority-select)
+   — полностью прозрачный, без рамок, width:100% чтобы 
+     занимать всю ширину .priority-pill
+   — display:block (или inline-block) — НЕ flex, чтобы 
+     dropdown открывался на полную ширину
+   ========================================================= */
+.priority-select {
+  width: 100%;                  /* Занимаем всю ширину «пилюли» */
+  height: 100%;                 /* Занимаем всю высоту «пилюли» */
+
+  background: none;             /* прозрачный фон */
+  border: none;                 /* без рамок */
+  outline: none;                /* без outline */
+  -webkit-appearance: none;     /* скрыть дефолтную стрелку в WebKit */
+  -moz-appearance: none;        /* скрыть дефолтную стрелку в Firefox */
+  appearance: none;             /* универсально */
+
+  font-size: 14px;              /* как у «В работе» */
+  font-weight: normal;             /* как у «В работе» */
+  color: inherit;               /* цвет наследуется от .priority-pill */
+  cursor: pointer;              /* «рука» при наведении */
+
+  padding-right: 20px;          /* место под нашу стрелку (чуть больше 5px) */
+
+  display: block;               /* БЛОКОВЫЙ, чтобы dropdown был по ширине select */
+  line-height: 1.2;             /* чтобы текст был вертикально прижат */
+  box-sizing: border-box;       /* padding не ломает ширину */
+}
+
+/* Для Firefox скрываем стандартную стрелку */
+.priority-select::-ms-expand {
+  display: none;
+}
+
+/* =========================================================
+   3) Псевдоэлемент-стрелка справа (priority-pill::after)
+   — аккуратно центруется по вертикали, стоит в 8px от правого края 
+   ========================================================= */
+.priority-pill::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 8px;                   /* 8px от правого края «пилюли» */
+  width: 0;
+  height: 0;
+  pointer-events: none;         /* чтобы клики шли на <select> */
+  transform: translateY(-50%);  /* центрируем по вертикали */
+
+  /* рисуем маленький треугольник-стрелку */
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid currentColor; /* currentColor = цвет текста «пилюли» */
+}
+
+/* =========================================================
+   4) Hover / focus эффекты «пилюли» 
+   — лёгкая полупрозрачная подсветка фона
+   ========================================================= */
+.priority-pill:hover,
+.priority-pill:focus-within {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+.dark .priority-pill:hover,
+.dark .priority-pill:focus-within {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* =========================================================
+   5) Dropdown-меню (список <option>) тянется под ширину «пилюли»
+   — укажем min-width:100%, чтобы при открытии список не «съезжал»
+   ========================================================= */
+.priority-select option {
+  min-width: 100%;
+  background-color: inherit;  /* чтобы фон списка совпадал с «пилюлей» */
+  color: currentColor;        /* чтобы цвет текста совпадал */
+}
+
+/* Немного подсветим элементы списка при наведении */
+.priority-select option:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
+.dark .priority-select option:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 640px) {
+  /* 1) Контейнер карточки: сохраняем прежнюю ширину, уменьшаем отступы */
+  .cardinfo_container {
+    width: min(700px, 90vw);
+    max-height: 90vh;
+    margin: 0 auto;
+    padding: 40px 12px 12px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
+
+  /* 2) Заголовок и описание: чуть меньше шрифт и отступы */
+  .cardinfo_title--static {
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+    padding-top: 12px;
+  }
+  .cardinfo_description--static {
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+
+  /* 3) «Табличные» ряды: лейбл над полем, без «растягивания» */
+  .cardinfo_table-fields {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .cardinfo_table-fields .row {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+  .cardinfo_table-fields .row_label {
+    font-size: 0.88rem;
+    margin-bottom: 2px;
+  }
+  .cardinfo_table-fields .row_value {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    max-width: 240px;
+  }
+
+  /* 3.1) Статус (cardinfo_static-value): fit-content + max-width */
+  .cardinfo_static-value {
+    width: auto !important;
+    max-width: 200px;
+    padding: 4px 10px;
+    font-size: 0.9rem;
+  }
+
+  /* 3.2) Поля «Дата начала» / «Дата завершения»: фиксированная ширина */
+  .cardinfo_table-fields .row.row-date .date-picker {
+    width: auto;
+    max-width: 120px;
+    padding: 4px 8px;
+    background: var(--secondary-background);
+    border-radius: 8px;
+  }
+  .cardinfo_table-fields .row.row-date input[type="date"] {
+    width: 120px;
+    font-size: 0.85rem;
+  }
+
+  /* 4) Приоритет: «пилюля» по содержимому, без 100% ширины */
+  .priority-pill {
+    display: inline-flex !important;
+    align-items: center;
+    position: relative;
+    padding: 4px 8px !important;
+    border-radius: 8px;
+    min-width: 80px;
+    max-width: 200px;
+    width: auto !important;
+    font-size: 0.9rem;
+  }
+  .priority-select {
+    width: 100%;
+    font-size: 0.9rem;
+    background-color: inherit;
+    color: inherit;
+    border: none;
+    outline: none;
+    appearance: none;
+    padding-right: 20px;
+    line-height: 1.2;
+    cursor: pointer;
+    z-index: 10; /* чтобы опции отрисовывались поверх модалки */
+  }
+  .priority-select option {
+    background-color: inherit;
+    color: inherit;
+    white-space: nowrap;
+    min-width: 100%;
+  }
+  .priority-select option:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* 5) Секция «Теги»: инпут и кнопка один под другим, ограниченная ширина */
+  .cardinfo_label-input {
+    max-width: 240px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 6px 8px;
+    background: var(--secondary-background);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .cardinfo_label-input .editable_input {
+    width: 100%;
+    font-size: 0.9rem;
+    white-space: normal;
+    word-break: break-word;
+    padding: 4px 6px;
+  }
+  .cardinfo_label-input .cardinfo_label-colors {
+    display: flex;
+    justify-content: center; /* центрируем кружочки */
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    margin-left: 40px;
+    margin-bottom: 15px;
+  }
+  .cardinfo_label-input .btn-add {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 0.9rem;
+    margin-left: 0; /* убираем отступ */
+  }
+  /* 5.1) Список уже добавленных тегов: многоколоночный, без обрезки текста */
+  .cardinfo_labels-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+    max-width: 100%;
+  }
+  .cardinfo_label-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    max-width: 100%;
+    white-space: normal;
+    word-break: break-word;
+  }
+  .cardinfo_label-remove {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .cardinfo_label-remove:hover {
+    color: var(--red-500);
+  }
+
+  /* 6) Чеклист: текст больше не обрезается, иконка фиксированного размера */
+  .cardinfo_tasks {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+  .cardinfo_task-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 0;
+    font-size: 0.9rem;
+    max-height: none;
+    overflow: visible;
+  }
+  .cardinfo_task-item .task-text {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 0.9rem;
+  }
+  .cardinfo_task-remove {
+    width: 16px;
+    height: 16px;
+    flex: none;
+    color: var(--text-muted);
+    transition: color 0.2s;
+    margin-left: auto;
+  }
+  .cardinfo_task-remove:hover {
+    color: var(--red-500);
+  }
+  .cardinfo_progress-bar {
+    height: 5px;
+    margin-bottom: 12px;
+  }
+
+  /* 7) «Добавить задачу» (Editable): full-width, чуть меньшая высота */
+  .cardinfo_container .editable_line {
+    width: 100%;
+    height: 36px;
+    padding: 0 8px;
+  }
+  .cardinfo_container .editable_input {
+    font-size: 0.9rem;
+  }
+  .cardinfo_container .editable_icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* 8) Кнопка «Закрыть» (крестик) ближе к краю */
+  .cardinfo_close-btn {
+    top: 8px;
+    right: 8px;
+  }
 }

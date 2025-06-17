@@ -5,6 +5,7 @@ import debounce from "lodash/debounce";
 import { X } from "react-feather";
 import { Plus, Trash, Clock } from "lucide-react";
 
+
 import Modal from "../../Modal/Modal";
 import Editable from "../../Editabled/Editable";
 import "./CardInfo.css";
@@ -17,7 +18,7 @@ function CardInfo(props) {
     id,
     title,
     description,
-    date,        // исходное поле с датой завершения
+    date,      
     labels,
     tasks,
     status,
@@ -30,7 +31,7 @@ function CardInfo(props) {
     status: status || "На проверке",
     startDate: initStart || new Date().toISOString().split("T")[0],
     dueDate: date || "",
-    priority: "Неизвестно",
+    priority: props.card.priority || "Низкий",
     labels: labels || [],
     tasks: tasks || [],
   });
@@ -45,10 +46,8 @@ function CardInfo(props) {
   }, 500)
 );
 
-// При любых изменениях localValues вызываем одну и ту же функцию
 useEffect(() => {
   debouncedSave.current(localValues);
-  // при размонтировании — «довызываем» всё, что ещё висит в debounce
   return () => {
     debouncedSave.current.flush();
   };
@@ -63,21 +62,7 @@ const handleClose = () => {
 
 
   // пересчет приоритета
-  const computePriority = (start, due) => {
-    if (!due) return "Неизвестно";
-    const sd = new Date(start), dd = new Date(due);
-    const diff = (dd - sd) / (1000 * 60 * 60 * 24);
-    if (diff <= 3) return "Срочный";
-    if (diff <= 7) return "Высокий";
-    if (diff <= 14) return "Средний";
-    return "Низкий";
-  };
-  useEffect(() => {
-    const p = computePriority(localValues.startDate, localValues.dueDate);
-    if (p !== localValues.priority) {
-      setLocalValues(v => ({ ...v, priority: p }));
-    }
-  }, [localValues.startDate, localValues.dueDate]);
+
 
   // обновление дат
   const updateStartDate = v => setLocalValues(p => ({ ...p, startDate: v }));
@@ -90,9 +75,12 @@ const handleClose = () => {
       case "В работе":    return { backgroundColor: "var(--blue-300)",   color: "var(--blue-700)" };
       case "На проверке":
       case "Срочный":     return { backgroundColor: "var(--red-300)",    color: "var(--red-700)" };
-      case "Высокий":     return { backgroundColor: "var(--yellow-300)", color: "var(--yellow-700)" };
-      case "Средний":     return { backgroundColor: "var(--blue-300)",   color: "var(--blue-700)" };
-      case "Низкий":      return { backgroundColor: "var(--green-300)",  color: "var(--green-700)" };
+     case "Высокий":
+       return { backgroundColor: "var(--red-300)",    color: "var(--red-700)" };   // яркий красный
+     case "Средний":
+       return { backgroundColor: "var(--yellow-300)", color: "var(--yellow-700)" }; // жёлтый
+     case "Низкий":
+       return { backgroundColor: "var(--green-300)",  color: "var(--green-700)" };  // зелёный
       case "Готово":      return { backgroundColor: "var(--green-300)",  color: "var(--green-700)" };
       default:            return { backgroundColor: "var(--secondary-background)", color: "var(--text-muted)" };
     }
@@ -227,16 +215,31 @@ if (progressPercent >= 33 && progressPercent <= 50) {
 </div>
 
           {/* Приоритет */}
-          <div className="row">
-            <div className="row_label">Приоритет</div>
-            <div
-              className="row_value cardinfo_static-value"
-              style={getStatusStyles(localValues.priority)}
-            >
-              {localValues.priority === "Срочный" && <Clock size={14} />}
-              {localValues.priority}
-            </div>
-          </div>
+{/* Блок «Приоритет» */}
+<div className="row">
+  <div className="row_label">Приоритет</div>
+  <div className="row_value">
+    {/* «Пилюля» для приоритета */}
+    <div
+      className="priority-pill"
+      style={getStatusStyles(localValues.priority)}
+    >
+      <select
+        className="priority-select"
+        value={localValues.priority}
+        onChange={(e) =>
+          setLocalValues((v) => ({ ...v, priority: e.target.value }))
+        }
+      >
+        <option value="Низкий">Низкий</option>
+        <option value="Средний">Средний</option>
+        <option value="Высокий">Высокий</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+
 
           {/* Теги */}
           <div className="row row-tags">
@@ -297,9 +300,6 @@ if (progressPercent >= 33 && progressPercent <= 50) {
         {/* Вкладки */}
         <div className="cardinfo_tabs">
           <span className="cardinfo_tab-active">Чеклист</span>
-          <span className="cardinfo_tab">Файлы</span>
-          <span className="cardinfo_tab">Комментарии</span>
-          <span className="cardinfo_tab">Активность</span>
         </div>
 
         {/* Чеклист */}

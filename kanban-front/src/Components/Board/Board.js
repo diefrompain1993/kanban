@@ -81,6 +81,7 @@ function Board(props) {
   return (
     <div className={`board ${darkTheme ? "dark" : ""}`}>
       <div className="board_header">
+        
         <h3>
           {board.title} ({board.cards.length})
         </h3>

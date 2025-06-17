@@ -57,7 +57,9 @@ if (progress >= 33 && progress <= 50) {
       <Draggable draggableId={id} index={props.index}>
         {(provided, snapshot) => (
           <div
-            className={`card ${snapshot.isDragging ? "dragging" : ""}`}
+            className={`card${snapshot.isDragging ? " dragging" : ""}${
+              props.card.status === "В архиве" ? " archived" : ""
+            }`}
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
