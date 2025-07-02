@@ -206,7 +206,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/addTask", { card: cardData });
+    axios.post("/api/addTask", { card: cardData })
     addTaskToSheet({
       id:          cardData.id,
       title:       cardData.title,
@@ -232,7 +232,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/editTask", { card: updatedCard });
+    axios.post("/api/editTask", { card: updatedCard })
     updateTaskInSheet({
       id:          updatedCard.id,
       title:       updatedCard.title,
@@ -253,7 +253,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/deleteTask", { id: cardId }).catch(console.error);
+    axios.post("/api/deleteTask", { id: cardId })
     deleteTaskFromSheet(cardId).catch(console.error);
   };
 
@@ -296,7 +296,7 @@ export default function App() {
       })
     );
 
-    axios.post("/api/updateTask", { card: movedCard }).catch(console.error);
+    axios.post("/api/updateTask", { card: movedCard })
     updateTaskInSheet({
       id:          movedCard.id,
       title:       movedCard.title,

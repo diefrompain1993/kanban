@@ -15,7 +15,8 @@
   --border: #e4e7ec;
 }
 
-html, body {
+html,
+body {
   overflow-x: hidden;
 }
 
@@ -83,14 +84,18 @@ html {
   width: 60px;
   height: 34px;
   margin-left: 20px;
-  user-select: none;          /* нельзя «дёргать» текст */
-  touch-action: manipulation; /* минимизируем «перехват» свайпа */
+  user-select: none;
+  /* нельзя «дёргать» текст */
+  touch-action: manipulation;
+  /* минимизируем «перехват» свайпа */
 }
+
 .switch input {
   opacity: 0;
   width: 0;
   height: 0;
 }
+
 .slider {
   position: absolute;
   cursor: pointer;
@@ -102,6 +107,7 @@ html {
   transition: 0.4s;
   border-radius: 34px;
 }
+
 .slider:before {
   position: absolute;
   content: "";
@@ -113,10 +119,12 @@ html {
   transition: 0.4s;
   border-radius: 50%;
 }
-input:checked + .slider {
+
+input:checked+.slider {
   background-color: var(--blue-500);
 }
-input:checked + .slider:before {
+
+input:checked+.slider:before {
   transform: translateX(26px);
 }
 
@@ -149,6 +157,7 @@ input:checked + .slider:before {
   color: #555;
   transition: color 0.3s;
 }
+
 .menu-item:hover {
   color: #000;
 }
@@ -166,12 +175,14 @@ input:checked + .slider:before {
   padding: 4px 0;
   z-index: 100;
 }
+
 .dropdown-item {
   padding: 6px 12px;
   font-size: 14px;
   color: #555;
   cursor: pointer;
 }
+
 .dropdown-item:hover {
   background-color: #f0f0f0;
 }
@@ -182,6 +193,7 @@ input:checked + .slider:before {
   display: flex;
   align-items: center;
 }
+
 .search-icon {
   position: absolute;
   left: 4px;
@@ -192,6 +204,7 @@ input:checked + .slider:before {
   color: #555;
   pointer-events: none;
 }
+
 .search-no-border {
   border: none;
   outline: none;
@@ -201,6 +214,7 @@ input:checked + .slider:before {
   color: #555;
   height: 24px;
 }
+
 .search-no-border::placeholder {
   color: #aaa;
 }
@@ -209,25 +223,32 @@ input:checked + .slider:before {
 .dark .board-menu {
   border-bottom: 1px solid #444;
 }
+
 .dark .menu-item {
   color: #aaa;
 }
+
 .dark .menu-item:hover {
   color: #fff;
 }
+
 .dark .dropdown-menu {
   background-color: #555;
   border: 1px solid #444;
 }
+
 .dark .dropdown-item {
   color: #ddd;
 }
+
 .dark .dropdown-item:hover {
   background-color: #666;
 }
+
 .dark .search-no-border {
   color: #fff;
 }
+
 .dark .search-icon {
   color: #ccc;
 }
@@ -237,40 +258,51 @@ input:checked + .slider:before {
   flex: 1;
   width: 100%;
   height: 100%;
-  
-  overflow-x: auto;     /* горизонталь остаётся */
-  overflow-y: auto;     /* теперь разрешён вертикальный скролл */
+
+  overflow-x: auto;
+  /* горизонталь остаётся */
+  overflow-y: auto;
+  /* теперь разрешён вертикальный скролл */
   -webkit-overflow-scrolling: touch;
 
   /* Можно оставить стили для скрытия «родного» скролла по горизонтали */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
 .app_boards_container::-webkit-scrollbar {
   display: none;
 }
+
 .app_boards_container {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
 .app_boards {
   display: flex;
-  flex-direction: row; /* колонки в одну линию */
-  width: fit-content;  /* контейнер “сжимается” по содержимому */
+  flex-direction: row;
+  /* колонки в одну линию */
+  width: fit-content;
+  /* контейнер “сжимается” по содержимому */
   gap: 24px;
   padding: 30px 30px;
 }
 
 /* Для планшетов и небольших десктопов */
 @media (max-width: 640px) {
+
   /* 1) Переводим .board-menu в CSS Grid 2×2 */
   .board-menu {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto auto;
-    gap: 8px;             /* отступы между «ячейками» */
-    padding: 8px 10px;    /* более узкие паддинги, чтобы не вылезать за экран */
-    margin: 0 10px 10px;  /* отступы от краёв экрана */
+    gap: 8px;
+    /* отступы между «ячейками» */
+    padding: 8px 10px;
+    /* более узкие паддинги, чтобы не вылезать за экран */
+    margin: 0 10px 10px;
+    /* отступы от краёв экрана */
     box-sizing: border-box;
     background-color: var(--background);
     border-radius: 8px;
@@ -289,45 +321,62 @@ input:checked + .slider:before {
 
   /* Поиск по названию (из .menu-right) в левом верхнем углу: */
   .board-menu .menu-right {
-    grid-column: 1 / 2;  /* первый столбец */
-    grid-row: 1 / 2;     /* первая строка */
-    display: flex;       /* оставляем контейнер как flex, чтобы input и иконка внутри остались на месте */
-    width: 100%;         /* чтобы занять всю ячейку */
+    grid-column: 1 / 2;
+    /* первый столбец */
+    grid-row: 1 / 2;
+    /* первая строка */
+    display: flex;
+    /* оставляем контейнер как flex, чтобы input и иконка внутри остались на месте */
+    width: 100%;
+    /* чтобы занять всю ячейку */
   }
+
   /* У самого инпута поиска по названию: */
   .board-menu .menu-right .search-container {
-    width: 100%;         /* растянем input на всю ширину ячейки */
+    width: 100%;
+    /* растянем input на всю ширину ячейки */
   }
 
   /* «Поиск по тегам…» (.menu-left .menu-item:nth-child(3)) располагаем справа в первой строке: */
   .board-menu .menu-left .menu-item:nth-child(3) {
-    grid-column: 2 / 3;  /* второй столбец */
-    grid-row: 1 / 2;     /* первая строка */
-    display: flex;       /* чтобы иконка+input выровнялись правильно */
+    grid-column: 2 / 3;
+    /* второй столбец */
+    grid-row: 1 / 2;
+    /* первая строка */
+    display: flex;
+    /* чтобы иконка+input выровнялись правильно */
     width: 100%;
     box-sizing: border-box;
     /* Дополнительно: зададим небольшой отступ слева, чтобы не слипаться с краем */
     padding-left: 4px;
   }
+
   /* Сама “строка” внутри этого .menu-item (иконка + input): */
   .board-menu .menu-left .menu-item:nth-child(3) .search-row {
-    width: 100%;  /* если вы используете обёртку-строку, либо примените к .search-no-border напрямую */
+    width: 100%;
+    /* если вы используете обёртку-строку, либо примените к .search-no-border напрямую */
   }
 
   /* «Фильтр» (.menu-left .menu-item:nth-child(2)) – в левом нижнем углу: */
   .board-menu .menu-left .menu-item:nth-child(2) {
-    grid-column: 1 / 2;  /* первый столбец */
-    grid-row: 2 / 3;     /* вторая строка */
-    justify-content: flex-start; /* выровняем кнопку «Фильтр» по левому краю */
+    grid-column: 1 / 2;
+    /* первый столбец */
+    grid-row: 2 / 3;
+    /* вторая строка */
+    justify-content: flex-start;
+    /* выровняем кнопку «Фильтр» по левому краю */
     width: 100%;
     box-sizing: border-box;
   }
 
   /* «Сортировка» (.menu-left .menu-item:nth-child(1)) – в правом нижнем углу: */
   .board-menu .menu-left .menu-item:nth-child(1) {
-    grid-column: 2 / 3;  /* второй столбец */
-    grid-row: 2 / 3;     /* вторая строка */
-    justify-content: flex-end; /* выровняем кнопку «Сортировка» по правому краю */
+    grid-column: 2 / 3;
+    /* второй столбец */
+    grid-row: 2 / 3;
+    /* вторая строка */
+    justify-content: flex-end;
+    /* выровняем кнопку «Сортировка» по правому краю */
     width: 100%;
     box-sizing: border-box;
   }
@@ -337,7 +386,8 @@ input:checked + .slider:before {
      и убираем gap между элементами там, где уже занимает grid-ячейку. */
 
   .board-menu .menu-left {
-    display: contents; /* делаем «невидимой» обёртку, чтобы элементы сидели в grid напрямую */
+    display: contents;
+    /* делаем «невидимой» обёртку, чтобы элементы сидели в grid напрямую */
   }
 
   /* 4) Чтобы поиск по тегам и по названию выглядели одинаково,
@@ -348,7 +398,8 @@ input:checked + .slider:before {
     width: 100%;
     box-sizing: border-box;
     font-size: 14px;
-    padding: 6px 8px; /* внутренние отступы для удобства */
+    padding: 6px 8px;
+    /* внутренние отступы для удобства */
   }
 
   /* Поиск по названию (в .menu-right) */
@@ -364,18 +415,21 @@ input:checked + .slider:before {
 
   .board-menu .menu-left .menu-item:nth-child(2),
   .board-menu .menu-left .menu-item:nth-child(1) {
-    max-width: 100%;  /* при необходимости можно указать, например, max-width: 120px; */
+    max-width: 100%;
+    /* при необходимости можно указать, например, max-width: 120px; */
   }
 }
 
 .search-icon {
-  margin-right: 8px; /* отодвигаем лупу на 8px от текста */
+  margin-right: 8px;
+  /* отодвигаем лупу на 8px от текста */
 }
 
 /* 2) Увеличиваем padding-left у обоих полей, 
       чтобы текст не прилипал к левой границе */
 .search-no-border {
-  padding-left: 32px; /* иконка (16px) + отступ (8px) + запас (8px) */
+  padding-left: 32px;
+  /* иконка (16px) + отступ (8px) + запас (8px) */
 }
 
 /* 3) Если используется класс search-no-border для обоих input,
@@ -387,6 +441,7 @@ input:checked + .slider:before {
   margin-right: 8px;
   margin-left: 6px;
 }
+
 .board-menu .menu-left .menu-item:nth-child(3) .search-no-border {
   padding-left: 32px;
 }
@@ -395,32 +450,168 @@ input:checked + .slider:before {
 .board-menu .menu-right .search-icon {
   margin-right: 8px;
 }
+
 .board-menu .menu-right .search-no-border {
   padding-left: 32px;
 }
+
 
 @media (max-width: 640px) {
   /* … ваши уже существующие правила grid для .board-menu … */
 
   /* ---- Теперь добавим отступ для «Фильтр» (в ячейке (2, 1)) ---- */
   .board-menu .menu-left .menu-item:nth-child(2) {
-    grid-column: 1 / 2;        /* остаётся первый столбец */
-    grid-row: 2 / 3;           /* остаётся вторая строка */
-    
+    grid-column: 1 / 2;
+    /* остаётся первый столбец */
+    grid-row: 2 / 3;
+    /* остаётся вторая строка */
+
     /* подвигим текст вправо, чтобы он совпал с отступом инпута */
-    padding-left: 32px;        /* такой же отступ, какой у input.search-no-border */
+    padding-left: 32px;
+    /* такой же отступ, какой у input.search-no-border */
     box-sizing: border-box;
-    /* text-align: left; */     /* можно оставить по умолчанию */
+    /* text-align: left; */
+    /* можно оставить по умолчанию */
   }
 
   /* ---- Добавим отступ для «Сортировка» (в ячейке (2, 2)) ---- */
   .board-menu .menu-left .menu-item:nth-child(1) {
-    grid-column: 2 / 3;        /* второй столбец */
-    grid-row: 2 / 3;           /* вторая строка */
-    
-    padding-left: 36px;        /* тот же отступ, чтобы «Сортировка» выровнялась под input */
+    grid-column: 2 / 3;
+    /* второй столбец */
+    grid-row: 2 / 3;
+    /* вторая строка */
+
+    padding-left: 36px;
+    /* тот же отступ, чтобы «Сортировка» выровнялась под input */
     box-sizing: border-box;
-    /* text-align: left; */     /* если нужно, можно сделать text-align: right, 
+    /* text-align: left; */
+    /* если нужно, можно сделать text-align: right, 
                                    но обычно «Сортировка» под input остаётся слева */
   }
+
 }
+
+/* ==================================================================================== */
+
+@media (max-width: 640px) {
+  .app_boards_container {
+    overflow: unset;
+    max-width: 100%;
+    margin-left: auto;
+
+    cursor: default;
+    margin-right: auto;
+  }
+
+  .app_boards {
+    display: flex;
+    flex-direction: column;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .app {
+    height: 100%;
+  }
+
+  .priority-select {}
+
+  .cardinfo_label-input .cardinfo_label-colors {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 10px;
+    margin-left: 0px;
+    margin-bottom: 15px;
+  }
+
+  .row-date {
+    padding-left: 7.8em;
+  }
+
+  .cardinfo_container {
+    text-align: center;
+  }
+
+  .cardinfo_table-fields .row {
+    padding-top: 10px;
+  }
+
+  .cardinfo_table-fields {
+    align-items: center;
+    text-align: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .cardinfo_table-fields>.row.row-date:nth-child(3) {
+    /* Перемещаем элемент 3 во вторую строку, вторую колонку */
+    grid-column: 2;
+    /* Вторая колонка */
+    grid-row: 2;
+    /* Вторая строка */
+    /* Или кратко: grid-area: 2 / 2; */
+  }
+
+  .cardinfo_table-fields>.row:nth-child(4) {
+    /* Перемещаем элемент 4 во вторую строку, первую колонку */
+    grid-column: 1;
+    /* Первая колонка */
+    grid-row: 2;
+    /* Вторая строка */
+    /* Или кратко: grid-area: 2 / 1; */
+  }
+
+  .cardinfo_table-fields>.row.row-tags {
+    grid-column: 1 / -1;
+    /* Занимает все колонки */
+    width: 100%;
+  }
+
+  .row-tags {}
+
+  .priority-pill:after {
+    z-index: 10;
+  }
+}
+
+@media (max-width: 400px) {
+  .app_boards_container {}
+
+  .app_boards {
+    padding-right: 0;
+    padding-left: 8%;
+  }
+
+  .board {
+    max-width: 90%;
+    padding: auto;
+  }
+
+  .row-date {
+    padding-left: 5em;
+  }
+}
+
+@media (max-width: 360px) {
+  .app_boards_container {}
+
+  .app_boards {
+    padding-left: 6%;
+  }
+
+  .board {}
+
+  .row-date {
+    padding-left: 2em;
+  }
+}
+
+.card {
+  overflow-wrap: break-word;
+}
+
+
+
+/* ===============МОДАЛКА================ */
