@@ -12,9 +12,11 @@ function Modal({ children, onClose }) {
   // блокируем прокрутку фона, пока модалка открыта
   useEffect(() => {
     const originalOverflow = document.body.style.overflow;
+    document.body.classList.add("modal-open");
     document.body.style.overflow = "hidden";
     return () => {
       document.body.style.overflow = originalOverflow;
+      document.body.classList.remove("modal-open");
     };
   }, []);
 
