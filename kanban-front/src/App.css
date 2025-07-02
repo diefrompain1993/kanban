@@ -210,7 +210,7 @@ input:checked+.slider:before {
   outline: none;
   background: none;
   padding-left: 24px;
-  font-size: 14px;
+  font-size: 1rem;
   color: #555;
   height: 24px;
 }
@@ -397,7 +397,7 @@ input:checked+.slider:before {
   .board-menu .menu-left .menu-item:nth-child(3) .search-no-border {
     width: 100%;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 1rem;
     padding: 6px 8px;
     /* внутренние отступы для удобства */
   }
@@ -406,7 +406,7 @@ input:checked+.slider:before {
   .board-menu .menu-right .search-no-border {
     width: 100%;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 1rem;
     padding: 6px 8px;
   }
 
