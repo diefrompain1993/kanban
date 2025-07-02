@@ -9,6 +9,15 @@ function Modal({ children, onClose }) {
     requestAnimationFrame(() => setVisible(true));
   }, []);
 
+  // блокируем прокрутку фона, пока модалка открыта
+  useEffect(() => {
+    const originalOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = originalOverflow;
+    };
+  }, []);
+
   // по Escape — запускаем закрытие
   useEffect(() => {
     const onKey = (e) => {
