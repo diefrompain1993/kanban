@@ -33,7 +33,7 @@
 
 /* Текст (неактивный режим) */
 .editable_text {
-  font-size: 14px;
+  font-size: 1rem;
   font-weight: 400;
   background: transparent;
   color: var(--foreground);
@@ -55,7 +55,7 @@
   border: none;
   outline: none;
   font-family: inherit;
-  font-size: 14px;
+  font-size: 1rem;
   color: var(--foreground);
 }
 

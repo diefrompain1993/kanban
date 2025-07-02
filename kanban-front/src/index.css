@@ -12,6 +12,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+body.modal-open {
+  overflow: hidden;
+  overscroll-behavior: none;
+  position: fixed;
+  width: 100%;
+  touch-action: none;
+}
+
+/* Prevent mobile browsers from zooming inputs on focus */
+input,
+textarea,
+select {
+  font-size: 16px;
+}
+
 p {
   font-size: 1rem;
   line-height: 1.875rem;
