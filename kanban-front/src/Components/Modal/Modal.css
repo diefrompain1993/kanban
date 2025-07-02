@@ -21,6 +21,7 @@
   border: none;
   max-height: 95vh;
   overflow-y: auto;
+  overscroll-behavior: contain; /* don't propagate scroll past edges */
   scrollbar-width: none; /* hide scrollbar in Firefox */
 
   /* Плавное масштабное появление */

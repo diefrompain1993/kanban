@@ -121,6 +121,7 @@
 
 .add-card-modal {
   overflow-y: auto;              /* уже у вас есть */
+  overscroll-behavior: contain;  /* prevent scroll chaining */
   scrollbar-width: none;         /* Firefox */
   -ms-overflow-style: none;      /* IE 10+ */
 }
