@@ -55,7 +55,7 @@
 }
 
 @media (max-width: 640px) {
-  /* Оверлей прокручивается сам, а контент имеет видимый отступ сверху и снизу */
+  /* Оверлей остаётся статичным, прокрутка внутри карточки */
   .modal {
     align-items: flex-start;
     padding: 0;
@@ -68,8 +68,8 @@
     box-shadow: none !important;
     background-color: transparent !important;
     padding: 0 !important;
-    max-height: calc(100vh - 40px) !important;
-    overflow-y: auto;
+    max-height: none !important;
+    overflow-y: visible;
   }
   /* При этом фон слоя остаётся полупрозрачным (на потомках) */
 }
