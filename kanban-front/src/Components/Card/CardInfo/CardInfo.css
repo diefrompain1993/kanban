@@ -98,6 +98,7 @@
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap; /* prevent line break in status pill */
 }
 
 /* Date-picker — более узкие поля */
@@ -423,10 +424,15 @@
 }
 
 /* Финальный wrap */
-.cardinfo_static-value,
 .row_value {
   word-break: break-word;
   overflow-wrap: anywhere;
+}
+
+/* Status pill should not wrap */
+.cardinfo_static-value {
+  word-break: normal;
+  overflow-wrap: normal;
 }
 
 /* Для строк с датами */
@@ -575,7 +581,7 @@
     width: min(700px, 90vw);
     max-height: 90vh;
     margin: 0 auto;
-    padding: 40px 12px 12px;
+    padding: 47px 12px 12px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   }

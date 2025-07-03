@@ -120,10 +120,13 @@ function Board(props) {
               />
 
               <div className="field-label">Дата начала</div>
-              <input
+  <input
   type="date"
   value={newCard.startDate}
   onChange={e =>
+    setNewCard(c => ({ ...c, startDate: e.target.value }))
+  }
+  onBlur={e =>
     setNewCard(c => ({ ...c, startDate: e.target.value }))
   }
   className="field-input date-small"
@@ -135,6 +138,9 @@ function Board(props) {
                 type="date"
                 value={newCard.dueDate}
                 onChange={e =>
+                  setNewCard(c => ({ ...c, dueDate: e.target.value }))
+                }
+                onBlur={e =>
                   setNewCard(c => ({ ...c, dueDate: e.target.value }))
                 }
                 className="field-input date-small"

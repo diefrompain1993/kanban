@@ -166,7 +166,7 @@ if (progressPercent >= 33 && progressPercent <= 50) {
     <Modal onClose={handleClose}>
       <div className="cardinfo_container">
         <div className="cardinfo_close-btn" onClick={handleClose}>
-          <X size={24} />
+          <X size={31} />
         </div>
 
         {/* Заголовок и описание */}
@@ -194,6 +194,7 @@ if (progressPercent >= 33 && progressPercent <= 50) {
       type="date"
       value={localValues.startDate}
       onChange={e => updateStartDate(e.target.value)}
+      onBlur={e => updateStartDate(e.target.value)}
       min="1900-01-01"
       max="9999-12-31"
     />
@@ -208,6 +209,7 @@ if (progressPercent >= 33 && progressPercent <= 50) {
       type="date"
       value={localValues.dueDate}
       onChange={e => updateDueDate(e.target.value)}
+      onBlur={e => updateDueDate(e.target.value)}
       min="1900-01-01"
       max="9999-12-31"
     />
