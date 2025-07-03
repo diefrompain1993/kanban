@@ -68,6 +68,10 @@ const Editable = forwardRef(({
   const startEdit = e => {
     e.stopPropagation();
     setIsEditing(true);
+    // On mobile browsers focusing an input asynchronously may not
+    // trigger the keyboard. Ensure we request focus right after
+    // switching to edit mode so the keyboard appears on the first tap.
+    setTimeout(() => inputRef.current?.focus(), 0);
   };
 
   const finishEdit = () => {
