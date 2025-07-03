@@ -55,12 +55,15 @@
 }
 
 @media (max-width: 640px) {
+  /* 1) Оверлей: прижать контент к верху + паддинги 5vh сверху/снизу */
   .modal {
-    /* вместо центрирования по вертикали — прижимаем к верху */
     align-items: flex-start;
-    /* и даём сверху/снизу ровно по 5vh пустого пространства */
-    padding-top: 5vh;
-    padding-bottom: 5vh;
+    padding: 5vh 0;
+  }
+
+  /* 2) Карточка: убрать свои мобильные margin-top/bottom */
+  .cardinfo_container {
+    margin: 0 auto;
   }
 }
 
