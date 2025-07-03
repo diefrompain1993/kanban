@@ -58,7 +58,6 @@
   /* Контент прижат к верху, а свободное место распределяется как отступы */
   .modal {
     align-items: flex-start;
-    overflow-y: auto;
     padding: 20px 0;
   }
 
