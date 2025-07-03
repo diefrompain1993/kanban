@@ -130,6 +130,7 @@ export default function App() {
   // === Сохранение темы в localStorage ===
   useEffect(() => {
     localStorage.setItem("kanban-theme", darkTheme ? "dark" : "light");
+    document.body.classList.toggle("dark", darkTheme);
   }, [darkTheme]);
 
   // === Сохранение boards в localStorage при изменениях ===
