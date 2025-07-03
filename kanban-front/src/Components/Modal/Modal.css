@@ -58,7 +58,7 @@
   /* Оверлей остаётся статичным, прокрутка внутри карточки */
   .modal {
     align-items: flex-start;
-    padding: 0;
+    padding: 20px 0;
   }
 
   .modal_content {
