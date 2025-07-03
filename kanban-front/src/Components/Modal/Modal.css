@@ -55,21 +55,25 @@
 }
 
 @media (max-width: 640px) {
-  /* Оверлей остаётся статичным, прокрутка внутри карточки */
   .modal {
+    /* поднимаем наверх и даём отступы сверху/снизу */
     align-items: flex-start;
-    padding: 20px 0;
+    padding: 20px;          /* раньше было 20px 0, теперь 20px и снизу тоже */
   }
 
   .modal_content {
     max-width: 95vw !important;
     margin: 0 auto !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
-    padding: 0 !important;
-    max-height: none !important;
-    overflow-y: visible;
+
+    /* вот эти две строки — ключевые */
+    max-height: calc(100vh - 40px) !important;  /* считаем высоту экрана минус 2×20px */
+    overflow-y: auto !important;                /* включаем скролл внутри модалки */
+
+    /* остальное — по вкусу, например добавить белый фон и скругления */
+    background-color: #fff !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+    box-shadow: 0 2px 10px rgba(0,0,0,.1) !important;
   }
-  /* При этом фон слоя остаётся полупрозрачным (на потомках) */
 }
+
