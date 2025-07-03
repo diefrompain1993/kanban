@@ -55,19 +55,21 @@
 }
 
 @media (max-width: 640px) {
-  /* Контент прижат к верху, а свободное место распределяется как отступы */
+  /* Оверлей прокручивается сам, а контент имеет видимый отступ сверху и снизу */
   .modal {
     align-items: flex-start;
-    padding: 20px 0;
+    padding: 0;
   }
 
   .modal_content {
     max-width: 95vw !important;
-    margin: 0 auto !important;
+    margin: 20px auto !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background-color: transparent !important;
     padding: 0 !important;
+    max-height: calc(100vh - 40px) !important;
+    overflow-y: auto;
   }
   /* При этом фон слоя остаётся полупрозрачным (на потомках) */
 }
