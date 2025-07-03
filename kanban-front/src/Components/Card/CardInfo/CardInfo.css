@@ -156,6 +156,8 @@
   align-items: flex-start;
   gap: 4px;
   margin-top: 0px;
+  width: 100%;
+  max-width: 240px;
 }
 .cardinfo_label-input {
   display: inline-flex;
