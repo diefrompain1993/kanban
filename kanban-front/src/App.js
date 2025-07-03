@@ -104,7 +104,7 @@ export default function App() {
 
   // === Загрузка данных (API) ===
   useEffect(() => {
-   axios.get("http://localhost:3001/api/board")
+   axios.get("/api/board")
       .then((res) => {
         const tasks = res.data.tasks || [];
         const grouped = statuses.map((st, i) => ({
@@ -206,7 +206,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("http://localhost:3001/api/addTask", { card: cardData })
+    axios.post("/api/addTask", { card: cardData })
     addTaskToSheet({
       id:          cardData.id,
       title:       cardData.title,
@@ -232,7 +232,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("http://localhost:3001/api/editTask", { card: updatedCard })
+    axios.post("/api/editTask", { card: updatedCard })
     updateTaskInSheet({
       id:          updatedCard.id,
       title:       updatedCard.title,
@@ -253,7 +253,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("http://localhost:3001/api/deleteTask", { id: cardId })
+    axios.post("/api/deleteTask", { id: cardId })
     deleteTaskFromSheet(cardId).catch(console.error);
   };
 
@@ -296,7 +296,7 @@ export default function App() {
       })
     );
 
-    axios.post("http://localhost:3001/api/updateTask", { card: movedCard })
+    axios.post("/api/updateTask", { card: movedCard })
     updateTaskInSheet({
       id:          movedCard.id,
       title:       movedCard.title,
