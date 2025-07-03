@@ -55,28 +55,21 @@
 }
 
 @media (max-width: 640px) {
-  /* 1) Оверлей: прижать контент к верху + паддинги 5vh сверху/снизу */
+  /* ==== Оверлей ==== */
   .modal {
+    /* прижимаем окно к верху контейнера и даём сверху/снизу ровно 5vh «пустого» пространства */
     align-items: flex-start;
     padding: 5vh 0;
+    /* если контент выше — прокрутка оверлея, а не обрезание */
+    overflow-y: auto;
   }
 
-  /* 2) Карточка: убрать свои мобильные margin-top/bottom */
-  .cardinfo_container {
-    margin: 0 auto;
-  }
-}
-
-
-@media (max-width: 640px) {
-  /* Сам оверлей – остаётся, но контент растягиваем */
+  /* ==== Контент (внутри оверлея) ==== */
   .modal_content {
-    max-width: 95vw !important;
-    max-height: 100vh !important;
-    border-radius: 0 !important;
-    box-shadow: none !important;
-    background-color: transparent !important;
-    padding: 0 !important;
+    /* по ширине почти на всю (как и раньше) */
+    max-width: 95vw;
+    /* высота — viewport минус 2×5vh, чтобы внутри оверлея не было «зацепа» за края */
+    max-height: calc(100vh - 10vh);
+    /* остальные ваши стили (фон, скругления) остаются прежними */
   }
-  /* При этом фон слоя остаётся полупрозрачным (на потомках) */
 }
