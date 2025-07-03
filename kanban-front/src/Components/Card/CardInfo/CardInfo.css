@@ -8,7 +8,7 @@
   color: var(--foreground);
   background: #fff;
   max-height: 90vh;
-  margin: 5vh auto;
+  margin: 0 auto;
   padding: 50px 24px 24px;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
@@ -574,7 +574,7 @@
   .cardinfo_container {
     width: min(700px, 90vw);
     max-height: 90vh;
-    margin: 5vh auto;
+    margin: 0 auto;
     padding: 40px 12px 12px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
