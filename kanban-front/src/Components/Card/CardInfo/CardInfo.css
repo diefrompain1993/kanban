@@ -579,12 +579,11 @@
   /* 1) Контейнер карточки: сохраняем прежнюю ширину, уменьшаем отступы */
   .cardinfo_container {
     width: min(700px, 90vw);
+    max-height: 90vh;
     margin: 0 auto;
     padding: 40px 12px 40px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    max-height: calc(100vh - 40px);
-    overflow-y: auto;
   }
 
   /* 2) Заголовок и описание: чуть меньше шрифт и отступы */
