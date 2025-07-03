@@ -579,7 +579,7 @@
   /* 1) Контейнер карточки: сохраняем прежнюю ширину, уменьшаем отступы */
   .cardinfo_container {
     width: min(700px, 90vw);
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 40px 12px 40px;
     border-radius: 12px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);

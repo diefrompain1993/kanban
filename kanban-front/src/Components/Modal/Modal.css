@@ -63,7 +63,7 @@
 
   .modal_content {
     max-width: 95vw !important;
-    margin: 20px auto !important;
+    margin: 0 auto !important;
     border-radius: 0 !important;
     box-shadow: none !important;
     background-color: transparent !important;
