@@ -55,6 +55,17 @@
 }
 
 @media (max-width: 640px) {
+  .modal {
+    /* вместо центрирования по вертикали — прижимаем к верху */
+    align-items: flex-start;
+    /* и даём сверху/снизу ровно по 5vh пустого пространства */
+    padding-top: 5vh;
+    padding-bottom: 5vh;
+  }
+}
+
+
+@media (max-width: 640px) {
   /* Сам оверлей – остаётся, но контент растягиваем */
   .modal_content {
     max-width: 95vw !important;
