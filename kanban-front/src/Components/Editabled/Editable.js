@@ -6,6 +6,7 @@ import React, {
   forwardRef,
   useImperativeHandle
 } from "react";
+import { flushSync } from "react-dom";
 import { SquarePen } from "lucide-react";
 import "./Editable.css";
 
@@ -67,11 +68,12 @@ const Editable = forwardRef(({
 
   const startEdit = e => {
     e.stopPropagation();
-    setIsEditing(true);
-    // On mobile browsers focusing an input asynchronously may not
-    // trigger the keyboard. Ensure we request focus right after
-    // switching to edit mode so the keyboard appears on the first tap.
-    setTimeout(() => inputRef.current?.focus(), 0);
+    // Immediately switch to edit mode so that focus can be applied
+    // within the same user interaction. flushSync forces the DOM
+    // update before we request focus, which helps mobile browsers
+    // (notably iOS Safari) show the keyboard on the first tap.
+    flushSync(() => setIsEditing(true));
+    inputRef.current?.focus();
   };
 
   const finishEdit = () => {
