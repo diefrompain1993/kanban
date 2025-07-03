@@ -166,7 +166,7 @@ if (progressPercent >= 33 && progressPercent <= 50) {
     <Modal onClose={handleClose}>
       <div className="cardinfo_container">
         <div className="cardinfo_close-btn" onClick={handleClose}>
-          <X size={31} />
+          <X size={24} />
         </div>
 
         {/* Заголовок и описание */}

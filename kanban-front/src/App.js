@@ -25,6 +25,8 @@ export default function App() {
   const [showFilterMenu, setShowFilterMenu] = useState(false);
   const [searchTagsQuery, setSearchTagsQuery] = useState(""); // ← поиск по тегам (левый)
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 640);
+
   const statuses = ["Очередь", "В работе", "На проверке", "Готово", "В архиве"];
   const sortLabels = {
     none:      "Все",
@@ -38,6 +40,14 @@ export default function App() {
 
   // → ДОБАВИТЬ: ref для контейнера досок (нужно для drag-to-scroll)
   const boardsContainerRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 640);
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // === Закрытие меню при клике вне ===
   useEffect(() => {
@@ -174,10 +184,14 @@ export default function App() {
     return result;
   };
 
-  const displayedBoards = boards.map((b) => ({
-    ...b,
-    cards: applyFilterSearchSort(b.cards),
-  }));
+  const displayedBoards = boards
+    .map((b) => ({
+      ...b,
+      cards: applyFilterSearchSort(b.cards),
+    }))
+    .filter((b) =>
+      isMobile && filterStatus !== "all" ? b.title === filterStatus : true
+    );
 
   // === Обработчики Sort/Filter меню ===
   const handleSortClick = () => {
