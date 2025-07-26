@@ -615,3 +615,10 @@ input:checked+.slider:before {
 
 
 /* ===============МОДАЛКА================ */
+/* ===== Login ===== */
+.login-page { display:flex; justify-content:center; align-items:center; height:100vh; background:var(--background); }
+.login-form { background:var(--secondary-background); padding:20px; border-radius:8px; display:flex; flex-direction:column; gap:10px; }
+.login-form input { padding:8px; }
+.login-form button { padding:8px; cursor:pointer; }
+.login-form .error { color:var(--red-700); }
+
