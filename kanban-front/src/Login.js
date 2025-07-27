@@ -13,8 +13,9 @@ export default function Login({ onLogin }) {
       const res = await axios.post('/api/login', { login, password });
       const token = res.data.token;
       localStorage.setItem('kanban-token', token);
+      localStorage.setItem('kanban-token-time', Date.now().toString());
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      onLogin();
+      onLogin(token);
     } catch (err) {
       setError('Неверный логин или пароль');
     }

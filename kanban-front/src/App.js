@@ -13,6 +13,8 @@ import "./App.css";
 
 export default function App() {
   // === Существующие стейты/рефы ===
+  const TOKEN_TTL = 5 * 60 * 60 * 1000; // 5 hours
+
   const [boards, setBoards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('kanban-token'));
   const [darkTheme, setDarkTheme] = useState(
@@ -42,12 +44,43 @@ export default function App() {
 
   // → ДОБАВИТЬ: ref для контейнера досок (нужно для drag-to-scroll)
   const boardsContainerRef = useRef(null);
+  const logoutTimerRef = useRef(null);
+
+  const logout = () => {
+    localStorage.removeItem('kanban-token');
+    localStorage.removeItem('kanban-token-time');
+    delete axios.defaults.headers.common['Authorization'];
+    setLoggedIn(false);
+  };
+
+  const scheduleLogout = (ms) => {
+    clearTimeout(logoutTimerRef.current);
+    logoutTimerRef.current = setTimeout(logout, ms);
+  };
+
+  const handleLogin = (token) => {
+    scheduleLogout(TOKEN_TTL);
+    setLoggedIn(true);
+  };
 
   useEffect(() => {
     const token = localStorage.getItem('kanban-token');
-    if (token) {
+    const time  = parseInt(localStorage.getItem('kanban-token-time'), 10);
+    if (token && time && Date.now() - time < TOKEN_TTL) {
       axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      setLoggedIn(true);
+      scheduleLogout(TOKEN_TTL - (Date.now() - time));
+    } else {
+      logout();
     }
+
+    const interceptor = axios.interceptors.response.use(r => r, err => {
+      if (err.response && err.response.status === 401) {
+        logout();
+      }
+      return Promise.reject(err);
+    });
+    return () => axios.interceptors.response.eject(interceptor);
   }, []);
 
   useEffect(() => {
@@ -336,7 +369,7 @@ export default function App() {
 
   // === JSX страницы ===
   if (!loggedIn) {
-    return <Login onLogin={() => setLoggedIn(true)} />;
+    return <Login onLogin={handleLogin} />;
   }
 
   return (

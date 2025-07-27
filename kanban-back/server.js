@@ -95,7 +95,7 @@ app.post("/api/login", async (req, res) => {
     }
     const user = usersCache.find(u => u.login === login && u.password === password);
     if (user) {
-      const token = jwt.sign({ login }, JWT_SECRET);
+      const token = jwt.sign({ login }, JWT_SECRET, { expiresIn: '5h' });
       return res.json({ token });
     } else {
       return res.status(401).json({ error: "Invalid credentials" });
