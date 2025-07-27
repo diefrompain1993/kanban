@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import {
   addTaskToSheet,
   updateTaskInSheet,
@@ -13,7 +14,6 @@ import "./App.css";
 
 export default function App() {
   // === Существующие стейты/рефы ===
-  const TOKEN_TTL = 5 * 60 * 60 * 1000; // 5 hours
 
   const [boards, setBoards] = useState([]);
   const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('kanban-token'));
@@ -48,7 +48,6 @@ export default function App() {
 
   const logout = () => {
     localStorage.removeItem('kanban-token');
-    localStorage.removeItem('kanban-token-time');
     delete axios.defaults.headers.common['Authorization'];
     setLoggedIn(false);
   };
@@ -59,19 +58,30 @@ export default function App() {
   };
 
   const handleLogin = (token) => {
-    scheduleLogout(TOKEN_TTL);
+    try {
+      const { exp } = jwtDecode(token);
+      const ms = exp * 1000 - Date.now();
+      if (ms > 0) scheduleLogout(ms);
+    } catch {
+      scheduleLogout(0);
+    }
     setLoggedIn(true);
   };
-
   useEffect(() => {
-    const token = localStorage.getItem('kanban-token');
-    const time  = parseInt(localStorage.getItem('kanban-token-time'), 10);
-    if (token && time && Date.now() - time < TOKEN_TTL) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
-      setLoggedIn(true);
-      scheduleLogout(TOKEN_TTL - (Date.now() - time));
-    } else {
-      logout();
+    const token = localStorage.getItem("kanban-token");
+    if (token) {
+      try {
+        const { exp } = jwtDecode(token);
+        if (Date.now() < exp * 1000) {
+          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+          setLoggedIn(true);
+          scheduleLogout(exp * 1000 - Date.now());
+        } else {
+          logout();
+        }
+      } catch {
+        logout();
+      }
     }
 
     const interceptor = axios.interceptors.response.use(r => r, err => {
@@ -82,6 +92,28 @@ export default function App() {
     });
     return () => axios.interceptors.response.eject(interceptor);
   }, []);
+  useEffect(() => {
+    if (!loggedIn) return;
+    const interval = setInterval(() => {
+      const t = localStorage.getItem("kanban-token");
+      if (!t) {
+        clearInterval(interval);
+        return logout();
+      }
+      try {
+        const { exp } = jwtDecode(t);
+        if (Date.now() >= exp * 1000) {
+          logout();
+          clearInterval(interval);
+        }
+      } catch {
+        logout();
+        clearInterval(interval);
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [loggedIn]);
+
 
   useEffect(() => {
     const handleResize = () => {
