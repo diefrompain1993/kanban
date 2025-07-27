@@ -1,11 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import axios from "axios";
+import { api } from "./api";
 import { jwtDecode } from "jwt-decode";
-import {
-  addTaskToSheet,
-  updateTaskInSheet,
-  deleteTaskFromSheet
-} from "./googleSheet";
 import { DragDropContext } from "react-beautiful-dnd";
 import { Sun, Moon } from "lucide-react";
 import Board from "./Components/Board/Board";
@@ -48,7 +43,7 @@ export default function App() {
 
   const logout = () => {
     localStorage.removeItem('kanban-token');
-    delete axios.defaults.headers.common['Authorization'];
+    delete api.defaults.headers.common['Authorization'];
     setLoggedIn(false);
   };
 
@@ -73,7 +68,7 @@ export default function App() {
       try {
         const { exp } = jwtDecode(token);
         if (Date.now() < exp * 1000) {
-          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+          api.defaults.headers.common["Authorization"] = "Bearer " + token;
           setLoggedIn(true);
           scheduleLogout(exp * 1000 - Date.now());
         } else {
@@ -84,13 +79,13 @@ export default function App() {
       }
     }
 
-    const interceptor = axios.interceptors.response.use(r => r, err => {
+    const interceptor = api.interceptors.response.use(r => r, err => {
       if (err.response && err.response.status === 401) {
         logout();
       }
       return Promise.reject(err);
     });
-    return () => axios.interceptors.response.eject(interceptor);
+    return () => api.interceptors.response.eject(interceptor);
   }, []);
   useEffect(() => {
     if (!loggedIn) return;
@@ -189,7 +184,7 @@ export default function App() {
   // === Загрузка данных (API) ===
   useEffect(() => {
     if (!loggedIn) return;
-    axios.get("/api/board")
+    api.get("/board")
       .then((res) => {
         const tasks = res.data.tasks || [];
         const grouped = statuses.map((st, i) => ({
@@ -296,17 +291,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/addTask", { card: cardData })
-    addTaskToSheet({
-      id:          cardData.id,
-      title:       cardData.title,
-      description: cardData.description,
-      status:      cardData.status,
-      startDate:   cardData.startDate,
-      dueDate:     cardData.dueDate,
-      priority:    cardData.priority,
-      labels:      cardData.labels
-    }).catch(console.error);
+    api.post("/addTask", { card: cardData })
   };
 
   const updateCard = (boardId, cardId, updatedCard) => {
@@ -322,17 +307,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/editTask", { card: updatedCard })
-    updateTaskInSheet({
-      id:          updatedCard.id,
-      title:       updatedCard.title,
-      description: updatedCard.description,
-      status:      updatedCard.status,
-      startDate:   updatedCard.startDate,
-      dueDate:     updatedCard.dueDate,
-      priority:    updatedCard.priority,
-      labels:      updatedCard.labels
-    }).catch(console.error);
+    api.post("/editTask", { card: updatedCard })
   };
 
   const removeCard = (boardId, cardId) => {
@@ -343,8 +318,7 @@ export default function App() {
           : b
       )
     );
-    axios.post("/api/deleteTask", { id: cardId })
-    deleteTaskFromSheet(cardId).catch(console.error);
+    api.post("/deleteTask", { id: cardId })
   };
 
   // === Drag & Drop из react-beautiful-dnd ===
@@ -386,17 +360,7 @@ export default function App() {
       })
     );
 
-    axios.post("/api/updateTask", { card: movedCard })
-    updateTaskInSheet({
-      id:          movedCard.id,
-      title:       movedCard.title,
-      description: movedCard.description,
-      status:      movedCard.status,
-      startDate:   movedCard.startDate,
-      dueDate:     movedCard.dueDate,
-      priority:    movedCard.priority,
-      labels:      movedCard.labels,
-    }).catch(console.error);
+    api.post("/updateTask", { card: movedCard })
   };
 
   // === JSX страницы ===

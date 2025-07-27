@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import { api } from './api';
 
 export default function Login({ onLogin }) {
   const [login, setLogin] = useState('');
@@ -10,10 +10,10 @@ export default function Login({ onLogin }) {
     e.preventDefault();
     setError(null);
     try {
-      const res = await axios.post('/api/login', { login, password });
-      const token = res.data.token;
+      const { data } = await api.post('/login', { login, password });
+      const token = data.token;
       localStorage.setItem('kanban-token', token);
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+      api.defaults.headers.common['Authorization'] = 'Bearer ' + token;
       onLogin(token);
     } catch (err) {
       setError('Неверный логин или пароль');
