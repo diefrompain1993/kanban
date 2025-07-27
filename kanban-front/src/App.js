@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
+import { jwtDecode } from "jwt-decode";
 import {
   addTaskToSheet,
   updateTaskInSheet,
@@ -8,11 +9,14 @@ import {
 import { DragDropContext } from "react-beautiful-dnd";
 import { Sun, Moon } from "lucide-react";
 import Board from "./Components/Board/Board";
+import Login from "./Login";
 import "./App.css";
 
 export default function App() {
   // === Существующие стейты/рефы ===
+
   const [boards, setBoards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('kanban-token'));
   const [darkTheme, setDarkTheme] = useState(
     localStorage.getItem("kanban-theme") === "dark"
   );
@@ -40,6 +44,76 @@ export default function App() {
 
   // → ДОБАВИТЬ: ref для контейнера досок (нужно для drag-to-scroll)
   const boardsContainerRef = useRef(null);
+  const logoutTimerRef = useRef(null);
+
+  const logout = () => {
+    localStorage.removeItem('kanban-token');
+    delete axios.defaults.headers.common['Authorization'];
+    setLoggedIn(false);
+  };
+
+  const scheduleLogout = (ms) => {
+    clearTimeout(logoutTimerRef.current);
+    logoutTimerRef.current = setTimeout(logout, ms);
+  };
+
+  const handleLogin = (token) => {
+    try {
+      const { exp } = jwtDecode(token);
+      const ms = exp * 1000 - Date.now();
+      if (ms > 0) scheduleLogout(ms);
+    } catch {
+      scheduleLogout(0);
+    }
+    setLoggedIn(true);
+  };
+  useEffect(() => {
+    const token = localStorage.getItem("kanban-token");
+    if (token) {
+      try {
+        const { exp } = jwtDecode(token);
+        if (Date.now() < exp * 1000) {
+          axios.defaults.headers.common["Authorization"] = "Bearer " + token;
+          setLoggedIn(true);
+          scheduleLogout(exp * 1000 - Date.now());
+        } else {
+          logout();
+        }
+      } catch {
+        logout();
+      }
+    }
+
+    const interceptor = axios.interceptors.response.use(r => r, err => {
+      if (err.response && err.response.status === 401) {
+        logout();
+      }
+      return Promise.reject(err);
+    });
+    return () => axios.interceptors.response.eject(interceptor);
+  }, []);
+  useEffect(() => {
+    if (!loggedIn) return;
+    const interval = setInterval(() => {
+      const t = localStorage.getItem("kanban-token");
+      if (!t) {
+        clearInterval(interval);
+        return logout();
+      }
+      try {
+        const { exp } = jwtDecode(t);
+        if (Date.now() >= exp * 1000) {
+          logout();
+          clearInterval(interval);
+        }
+      } catch {
+        logout();
+        clearInterval(interval);
+      }
+    }, 2000);
+    return () => clearInterval(interval);
+  }, [loggedIn]);
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -114,7 +188,8 @@ export default function App() {
 
   // === Загрузка данных (API) ===
   useEffect(() => {
-   axios.get("/api/board")
+    if (!loggedIn) return;
+    axios.get("/api/board")
       .then((res) => {
         const tasks = res.data.tasks || [];
         const grouped = statuses.map((st, i) => ({
@@ -125,7 +200,7 @@ export default function App() {
         setBoards(grouped);
       })
       .catch((err) => console.error("Ошибка загрузки:", err));
-  }, []);
+  }, [loggedIn]);
 
   // === Сохранение темы в localStorage ===
   useEffect(() => {
@@ -325,6 +400,10 @@ export default function App() {
   };
 
   // === JSX страницы ===
+  if (!loggedIn) {
+    return <Login onLogin={handleLogin} />;
+  }
+
   return (
     <div className={`app ${darkTheme ? "dark" : ""}`}>
       <div className="app_nav">
