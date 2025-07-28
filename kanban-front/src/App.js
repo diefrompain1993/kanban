@@ -8,11 +8,13 @@ import {
 import { DragDropContext } from "react-beautiful-dnd";
 import { Sun, Moon } from "lucide-react";
 import Board from "./Components/Board/Board";
+import Login from "./Login";
 import "./App.css";
 
 export default function App() {
   // === Существующие стейты/рефы ===
   const [boards, setBoards] = useState([]);
+  const [loggedIn, setLoggedIn] = useState(!!localStorage.getItem('kanban-token'));
   const [darkTheme, setDarkTheme] = useState(
     localStorage.getItem("kanban-theme") === "dark"
   );
@@ -40,6 +42,13 @@ export default function App() {
 
   // → ДОБАВИТЬ: ref для контейнера досок (нужно для drag-to-scroll)
   const boardsContainerRef = useRef(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem('kanban-token');
+    if (token) {
+      axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
+    }
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -114,7 +123,8 @@ export default function App() {
 
   // === Загрузка данных (API) ===
   useEffect(() => {
-   axios.get("/api/board")
+    if (!loggedIn) return;
+    axios.get("/api/board")
       .then((res) => {
         const tasks = res.data.tasks || [];
         const grouped = statuses.map((st, i) => ({
@@ -125,7 +135,7 @@ export default function App() {
         setBoards(grouped);
       })
       .catch((err) => console.error("Ошибка загрузки:", err));
-  }, []);
+  }, [loggedIn]);
 
   // === Сохранение темы в localStorage ===
   useEffect(() => {
@@ -325,6 +335,10 @@ export default function App() {
   };
 
   // === JSX страницы ===
+  if (!loggedIn) {
+    return <Login onLogin={() => setLoggedIn(true)} />;
+  }
+
   return (
     <div className={`app ${darkTheme ? "dark" : ""}`}>
       <div className="app_nav">
