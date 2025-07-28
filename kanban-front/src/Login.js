@@ -8,19 +8,20 @@ export default function Login({ onLogin }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
-      // ВАЖНО: backend ожидает username, а не login
+      // ⚠️ ВАЖНО: backend ожидает login, а не username!
       const { data } = await api.post('/login', {
-        username: login,
+        login,
         password,
       });
 
       const token = data.token;
 
-      // Сохраняем токен и добавляем его в api-инстанс
+      // Сохраняем токен и добавляем его в axios
       localStorage.setItem('kanban-token', token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
@@ -42,7 +43,7 @@ export default function Login({ onLogin }) {
           type="text"
           placeholder="Логин"
           value={login}
-          onChange={e => setLogin(e.target.value)}
+          onChange={(e) => setLogin(e.target.value)}
           required
         />
 
@@ -51,13 +52,13 @@ export default function Login({ onLogin }) {
             type={showPassword ? 'text' : 'password'}
             placeholder="Пароль"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <button
             type="button"
             className="eye-button"
-            onClick={() => setShowPassword(v => !v)}
+            onClick={() => setShowPassword((v) => !v)}
             aria-label={showPassword ? 'Скрыть пароль' : 'Показать пароль'}
           >
             {showPassword ? <FaEyeSlash /> : <FaEye />}
