@@ -1,30 +1,33 @@
-// src/Login.js
 import React, { useState } from 'react';
 import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { api } from './api';
 
 export default function Login({ onLogin }) {
-  const [login, setLogin]           = useState('');
-  const [password, setPassword]     = useState('');
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError]           = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async e => {
     e.preventDefault();
     setError('');
     try {
-      // В деве: POST http://localhost:3001/api/login
-      // В проде: POST /api/login
-      const { data } = await api.post('/login', { login, password });
+      // ВАЖНО: backend ожидает username, а не login
+      const { data } = await api.post('/login', {
+        username: login,
+        password,
+      });
+
       const token = data.token;
 
-      // Сохраняем токен и добавляем в api-инстанс
+      // Сохраняем токен и добавляем его в api-инстанс
       localStorage.setItem('kanban-token', token);
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
       // Уведомляем App, что логин прошёл успешно
       onLogin(token);
-    } catch {
+    } catch (err) {
+      console.error('Login error:', err);
       setError('Неверный логин или пароль');
     }
   };
